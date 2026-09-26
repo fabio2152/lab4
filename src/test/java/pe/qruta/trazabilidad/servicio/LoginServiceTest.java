@@ -1,6 +1,7 @@
 package pe.qruta.trazabilidad.servicio;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,5 +49,20 @@ class LoginServiceTest {
 
         // Entonces
         assertThat(usuario).isSameAs(productor);
+    }
+
+
+    @Test
+    void unaContrasenaIncorrectaSeRechaza() {
+
+        // Dado
+        // productor1 registrado con la contraseña clave123 (prepararUsuarios)
+
+        // Cuando / Entonces
+        assertThatThrownBy(() ->
+            login.iniciarSesion("productor1", "otraClave")
+        )
+            .isInstanceOf(CredencialesInvalidasException.class)
+            .hasMessage("Usuario o contraseña incorrectos");
     }
 }
