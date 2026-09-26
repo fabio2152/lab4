@@ -16,6 +16,34 @@
 **TDD – Test-Driven Development**, aplicando el ciclo RED → GREEN → REFACTOR.
 El registro de cada ciclo se encuentra en [docs/bitacora-tdd.md](docs/bitacora-tdd.md) y las capturas en [docs/evidencias/](docs/evidencias/).
 
+## Cómo aplicamos TDD
+
+Cada comportamiento se construyó con el ciclo **RED → GREEN → REFACTOR**: primero se escribió una sola prueba y se comprobó que fallaba (RED), luego se escribió el código mínimo para que pasara (GREEN) y, con todas las pruebas del ciclo en verde, se mejoró el diseño sin cambiar el comportamiento (REFACTOR).
+En total son **21 pruebas automatizadas en 7 ciclos**: 21 commits `test` (RED), 21 commits `feat` (GREEN) y 8 commits `refactor`.
+Cada fase guarda la salida de `./mvnw test` en [docs/evidencias/](https://github.com/fabio2152/lab4/tree/main/docs/evidencias) (50 archivos `.txt`).
+El detalle de cada prueba (qué falló, qué código mínimo se escribió y qué se refactorizó) está en la [bitácora TDD](https://github.com/fabio2152/lab4/blob/main/docs/bitacora-tdd.md).
+
+## Entregables
+
+| # | Entregable | Dónde encontrarlo |
+|---|---|---|
+| 1 | Presentación | Se entrega aparte, en PowerPoint. |
+| 2 | Código fuente | [src/](https://github.com/fabio2152/lab4/tree/main/src) |
+| 3 | Repositorio Git | [Historial de commits](https://github.com/fabio2152/lab4/commits/main): muestra, para cada prueba, el commit `test` (RED) antes del commit `feat` (GREEN), y el commit `refactor` que cierra cada ciclo. |
+| 4 | README del proyecto | [README.md](https://github.com/fabio2152/lab4/blob/main/README.md) (este archivo). |
+| 5 | Documentación de la metodología | [docs/bitacora-tdd.md](https://github.com/fabio2152/lab4/blob/main/docs/bitacora-tdd.md) |
+| 6 | Evidencias de implementación | [docs/evidencias/](https://github.com/fabio2152/lab4/tree/main/docs/evidencias) (salidas de `./mvnw test` y capturas) y la pestaña [Actions](https://github.com/fabio2152/lab4/actions), donde se ve la ejecución de las pruebas de cada push: fallida (❌) en los commits RED y exitosa (✅) en los commits GREEN y REFACTOR. |
+| 7 | Demostración funcional | Se realiza en vivo durante la exposición. |
+| 8 | Conclusiones del equipo | Están en la presentación (PowerPoint). |
+
+**Demostración funcional:** Exposición.
+
+**Resumen de conclusiones** (según la [bitácora](https://github.com/fabio2152/lab4/blob/main/docs/bitacora-tdd.md)):
+
+- Las pruebas guiaron el diseño: cada atajo mínimo (la constante de T01, la lista sin filtrar de T10, el login sin contraseña de T16) fue roto por la prueba siguiente, y ningún parámetro se usó antes de que una prueba lo pidiera.
+- El orden de las pruebas importó: T05 antes que T06 y T07 antes que T08 permitieron que cada prueba fallara primero, y los refactors llevaron cada regla a su lugar (`EstadoProducto` conoce la siguiente etapa, `Producto.esVisiblePara` decide la visibilidad) sin cambiar el comportamiento.
+- El resultado es verificable: 21 pruebas en verde y una cobertura del 96 % de líneas y 97 % de ramas en el dominio y el servicio; al pasar a PostgreSQL, el ciclo 7 detectó con pruebas que comparar usuarios por referencia dejaba de funcionar.
+
 ## Problema seleccionado
 
 **Funcionalidad: actualizar el estado de un producto en la cadena de suministro.**
