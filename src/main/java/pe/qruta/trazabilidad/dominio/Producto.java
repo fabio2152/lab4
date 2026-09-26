@@ -39,6 +39,20 @@ public class Producto {
             );
         }
 
+        boolean esLaSiguienteEtapa =
+            (estado == EstadoProducto.EN_ORIGEN
+                && nuevoEstado == EstadoProducto.EN_TRANSITO)
+            || (estado == EstadoProducto.EN_TRANSITO
+                && nuevoEstado == EstadoProducto.EN_DESTINO)
+            || (estado == EstadoProducto.EN_DESTINO
+                && nuevoEstado == EstadoProducto.ENTREGADO);
+
+        if (!esLaSiguienteEtapa) {
+            throw new CambioDeEstadoNoPermitidoException(
+                "No se puede pasar de " + estado + " a " + nuevoEstado
+            );
+        }
+
         estado = nuevoEstado;
 
         registrarHora(
