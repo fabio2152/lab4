@@ -1,6 +1,7 @@
 package pe.qruta.trazabilidad.dominio;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.Clock;
@@ -235,6 +236,28 @@ class ProductoTest {
             .hasMessage(
                 "El usuario no está asignado a este producto"
             );
+    }
+
+
+    @Test
+    void elIntermediarioAsignadoLeidoDeNuevoPuedeCambiarElEstado() {
+
+        // Dado
+        Producto producto =
+            new Producto("Palta Hass", productor, intermediario);
+
+        Usuario mismoIntermediarioLeidoDeNuevo =
+            new Usuario("intermediario1", Rol.INTERMEDIARIO);
+
+        // Cuando / Entonces
+        assertThatCode(() ->
+            producto.cambiarEstado(
+                EstadoProducto.EN_TRANSITO,
+                mismoIntermediarioLeidoDeNuevo,
+                relojFijoEn(horaDelDia(8, 0))
+            )
+        )
+            .doesNotThrowAnyException();
     }
 
 
