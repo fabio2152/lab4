@@ -3,6 +3,7 @@ package pe.qruta.trazabilidad.servicio;
 import java.time.Clock;
 import java.util.List;
 
+import pe.qruta.trazabilidad.dominio.EstadoProducto;
 import pe.qruta.trazabilidad.dominio.Producto;
 import pe.qruta.trazabilidad.dominio.Usuario;
 import pe.qruta.trazabilidad.repositorio.ProductoRepositorioEnMemoria;
@@ -49,5 +50,13 @@ public class ProductoService {
                 .stream()
                 .filter(producto -> producto.esVisiblePara(usuario))
                 .toList();
+    }
+
+
+    public void cambiarEstado(
+            Long idProducto,
+            EstadoProducto nuevoEstado,
+            Usuario usuario
+    ) {
     }
 }

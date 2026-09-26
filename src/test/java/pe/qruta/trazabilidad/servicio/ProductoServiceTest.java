@@ -147,4 +147,30 @@ class ProductoServiceTest {
         assertThat(productos)
             .containsExactly(palta);
     }
+
+
+    @Test
+    void cambiarElEstadoPorIdUsaElRelojDelSistema() {
+
+        // Dado
+        Producto palta =
+            servicio.crearProducto("Palta Hass", productor, intermediario);
+
+        // Cuando
+        servicio.cambiarEstado(
+            palta.getId(),
+            EstadoProducto.EN_TRANSITO,
+            intermediario
+        );
+
+        // Entonces
+        Producto actualizado =
+            servicio.buscarPorId(palta.getId());
+
+        assertThat(actualizado.getEstado())
+            .isEqualTo(EstadoProducto.EN_TRANSITO);
+
+        assertThat(actualizado.getHoraInicioTransporte())
+            .isEqualTo(OCHO_DE_LA_MANANA);
+    }
 }
