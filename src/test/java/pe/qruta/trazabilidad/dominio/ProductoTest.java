@@ -1,6 +1,7 @@
 package pe.qruta.trazabilidad.dominio;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.Clock;
 import java.time.Duration;
@@ -103,6 +104,28 @@ class ProductoTest {
 
         assertThat(producto.getDuracionTransporte())
             .isEqualTo(Duration.ofHours(6).plusMinutes(30));
+    }
+
+
+    @Test
+    void pedirLaDuracionDeUnProductoEnTransitoSeRechazaPorqueAunNoTieneHoraDeLlegada() {
+
+        // Dado
+        Producto producto =
+            new Producto("Palta Hass", productor, intermediario);
+
+        producto.cambiarEstado(
+            EstadoProducto.EN_TRANSITO,
+            intermediario,
+            relojFijoEn(horaDelDia(8, 0))
+        );
+
+        // Cuando / Entonces
+        assertThatThrownBy(() -> producto.getDuracionTransporte())
+            .isInstanceOf(DuracionNoDisponibleException.class)
+            .hasMessage(
+                "La duración del transporte aún no está disponible: falta la hora de llegada"
+            );
     }
 
 
