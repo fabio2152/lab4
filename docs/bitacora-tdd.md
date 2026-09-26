@@ -17,24 +17,24 @@ Repositorio: https://github.com/fabio2152/lab4
 | T04 | 2 | Error | RE-08 | Pedir la duración estando EN_TRANSITO se rechaza | [`6d5bdf6`](https://github.com/fabio2152/lab4/commit/6d5bdf6) | [`dda7055`](https://github.com/fabio2152/lab4/commit/dda7055) | ✅ |
 | T05 | 2 | Límite | RE-06 | Un producto ENTREGADO no puede cambiar de estado | [`0452480`](https://github.com/fabio2152/lab4/commit/0452480) | [`dd8ccc4`](https://github.com/fabio2152/lab4/commit/dd8ccc4) | ✅ |
 | T06 | 2 | Error | RE-05 | Pasar de EN_ORIGEN a EN_DESTINO se rechaza | [`f76fa76`](https://github.com/fabio2152/lab4/commit/f76fa76) | [`dc8fa59`](https://github.com/fabio2152/lab4/commit/dc8fa59) | ✅ |
-| T07 | 3 | Error | RE-04 | El productor no puede cambiar el estado | | | Pendiente |
-| T08 | 3 | Error | RE-04 | Un intermediario no asignado no puede cambiar el estado | | | Pendiente |
+| T07 | 3 | Error | RE-04 | El productor no puede cambiar el estado | [`50e78ea`](https://github.com/fabio2152/lab4/commit/50e78ea) | [`c97cd14`](https://github.com/fabio2152/lab4/commit/c97cd14) | ✅ |
+| T08 | 3 | Error | RE-04 | Un intermediario no asignado no puede cambiar el estado | [`eb65b6f`](https://github.com/fabio2152/lab4/commit/eb65b6f) | [`9a040c6`](https://github.com/fabio2152/lab4/commit/9a040c6) | ✅ |
 
 | Ciclo | Tema | REFACTOR | Estado |
 |---|---|---|---|
 | 1 | Recorrido normal del producto | [`33b4d0a`](https://github.com/fabio2152/lab4/commit/33b4d0a) | ✅ Completo |
 | 2 | Orden de las etapas | [`15062f8`](https://github.com/fabio2152/lab4/commit/15062f8) | ✅ Completo |
-| 3 | Permisos | | Pendiente |
+| 3 | Permisos | [`d3cd1f9`](https://github.com/fabio2152/lab4/commit/d3cd1f9) | ✅ Completo |
 
 ## Control de requisitos mínimos
 
-- [x] Al menos 5 pruebas automatizadas (6 de 8).
-- [ ] Al menos 3 ciclos RED-GREEN-REFACTOR completos (2 de 3).
+- [x] Al menos 5 pruebas automatizadas (8 de 8).
+- [x] Al menos 3 ciclos RED-GREEN-REFACTOR completos (3 de 3).
 - [x] Casos normales (T01, T02, T03).
 - [x] Casos límite (T05).
-- [x] Casos de error (T04, T06; faltan T07, T08).
+- [x] Casos de error (T04, T06, T07, T08).
 - [x] Ejecución completa de todas las pruebas (`./mvnw test`) en verde al cerrar cada ciclo.
-- [x] Reporte de cobertura JaCoCo (`target/site/jacoco/index.html`).
+- [x] Reporte de cobertura JaCoCo (`target/site/jacoco/index.html`): 100 % de líneas y ramas del paquete `dominio` (ver [Resultados](#resultados)).
 
 ---
 
@@ -457,6 +457,203 @@ private void validarCambioDeEtapa(EstadoProducto nuevoEstado) {
 - **Guardas al inicio de `cambiarEstado`:** una regla incumplida se detecta antes de modificar datos, así el producto nunca queda en un estado intermedio.
 - **Límite de "lo mínimo":** en T06 el mínimo no podía ser un caso literal, porque eso habría obligado a que el refactor cambiara comportamiento. Se eligió el mínimo que el refactor pudiera reorganizar sin alterar resultados.
 - **Pendiente para el ciclo 3:** el parámetro `usuario` de `cambiarEstado` todavía no se usa; cualquiera puede cambiar el estado. T07 y T08 (RE-04) lo exigirán.
+
+---
+
+## Ciclo 3 – Permisos
+
+**Fecha:** 2026-09-26
+**Responsables:** Fabio Ezequiel Malpartida Lema, Piero Anghelo Pittman Tolentino
+**Reglas que se abordan:** RE-04
+**Tipo de casos:** Error (T07, T08)
+
+### T07 – El productor no puede cambiar el estado de su producto (RE-04)
+
+```text
+Dado un producto en EN_ORIGEN
+Cuando su propio productor intenta pasarlo a EN_TRANSITO
+Entonces se rechaza con OperacionNoAutorizadaException:
+  "Solo un intermediario puede cambiar el estado de un producto"
+```
+
+**🔴 RED** – `ProductoTest#elProductorNoPuedeCambiarElEstadoDeSuProducto`
+
+- Esqueleto agregado: clase vacía `OperacionNoAutorizadaException`. `Producto` y `Usuario` no cambiaron.
+- Se pidió un cambio de etapa **válido** (EN_ORIGEN → EN_TRANSITO) para que el único motivo de rechazo fuera el permiso, no el orden de las etapas.
+- **Qué falló:** el productor pudo cambiar el estado; el parámetro `usuario` se recibía pero no se usaba.
+
+```text
+Tests run: 7, Failures: 1, Errors: 0
+Expecting code to raise a throwable.
+```
+
+- Commit: `test(ciclo-3): T07 el productor no puede cambiar el estado de su producto [RED]` ([`50e78ea`](https://github.com/fabio2152/lab4/commit/50e78ea))
+- Evidencia: [ciclo-3-T07-red.txt](evidencias/ciclo-3-T07-red.txt)
+
+**🟢 GREEN**
+
+- **Código mínimo:** `Usuario` guarda su `rol` y lo expone con `getRol()` (el `nombreUsuario` sigue sin guardarse: ninguna prueba lo pide); la excepción recibe el mensaje; y `cambiarEstado` valida el rol **antes** que la etapa, para que alguien sin permiso no obtenga información del estado del producto. Solo se valida el rol, no la asignación.
+
+```java
+if (usuario.getRol() != Rol.INTERMEDIARIO) {
+    throw new OperacionNoAutorizadaException(
+        "Solo un intermediario puede cambiar el estado de un producto"
+    );
+}
+```
+
+- Resultado: `Tests run: 7, Failures: 0, Errors: 0` – BUILD SUCCESS.
+- Commit: `feat(ciclo-3): T07 el productor no puede cambiar el estado de su producto [GREEN]` ([`c97cd14`](https://github.com/fabio2152/lab4/commit/c97cd14))
+- Evidencia: [ciclo-3-T07-green.txt](evidencias/ciclo-3-T07-green.txt)
+
+### T08 – Un intermediario no asignado no puede cambiar el estado (RE-04)
+
+```text
+Dado un producto asignado a intermediario1
+  y otro usuario intermediario2 con rol INTERMEDIARIO
+Cuando intermediario2 intenta pasarlo a EN_TRANSITO
+Entonces se rechaza con OperacionNoAutorizadaException:
+  "El usuario no está asignado a este producto"
+```
+
+**🔴 RED** – `ProductoTest#unIntermediarioNoAsignadoNoPuedeCambiarElEstado`
+
+- No hizo falta ningún esqueleto: reutiliza la excepción de T07.
+- El usuario tiene el rol correcto a propósito, para que lo único que falle sea la asignación.
+- **Qué falló:** el intermediario no asignado superaba la validación de rol y cambiaba el estado.
+
+```text
+Tests run: 8, Failures: 1, Errors: 0
+Expecting code to raise a throwable.
+```
+
+- Commit: `test(ciclo-3): T08 un intermediario no asignado no puede cambiar el estado [RED]` ([`eb65b6f`](https://github.com/fabio2152/lab4/commit/eb65b6f))
+- Evidencia: [ciclo-3-T08-red.txt](evidencias/ciclo-3-T08-red.txt)
+
+**🟢 GREEN**
+
+- **Código mínimo:** `Producto` guarda por fin el `intermediarioAsignado` que recibía desde T01, y `cambiarEstado` compara al usuario con él. La comparación es por referencia (`!=`) porque `Usuario` aún no tiene `id` ni `equals` y ninguna prueba los pide.
+
+```java
+public Producto(String nombre, Usuario productor, Usuario intermediarioAsignado) {
+    this.intermediarioAsignado = intermediarioAsignado;
+}
+
+if (usuario != intermediarioAsignado) {
+    throw new OperacionNoAutorizadaException(
+        "El usuario no está asignado a este producto"
+    );
+}
+```
+
+- Resultado: `Tests run: 8, Failures: 0, Errors: 0` – BUILD SUCCESS.
+- Commit: `feat(ciclo-3): T08 un intermediario no asignado no puede cambiar el estado [GREEN]` ([`9a040c6`](https://github.com/fabio2152/lab4/commit/9a040c6))
+- Evidencia: [ciclo-3-T08-green.txt](evidencias/ciclo-3-T08-green.txt)
+
+### 🔵 REFACTOR del ciclo 3
+
+**Sugerencia del documento:** separar la validación de permisos en un método propio con excepciones y mensajes claros.
+
+**Qué se mejoró y por qué:**
+
+1. Las dos guardas de permisos pasaron a un método privado `validarPermiso(usuario)`. Ahora `cambiarEstado` se lee como la regla de negocio completa, en cuatro pasos: **validar permiso → validar etapa → cambiar estado → registrar hora**. Cada validación tiene su propio método, su propia excepción y su propio mensaje.
+2. `intermediarioAsignado` (en `Producto`) y `rol` (en `Usuario`) pasaron a ser `final`: se asignan una sola vez en el constructor y no pueden cambiar después.
+3. Los mensajes y las excepciones no cambiaron; las 8 pruebas siguen en verde sin tocarlas.
+
+**Código antes:**
+
+```java
+public void cambiarEstado(EstadoProducto nuevoEstado, Usuario usuario, Clock reloj) {
+
+    if (usuario.getRol() != Rol.INTERMEDIARIO) {
+        throw new OperacionNoAutorizadaException(
+            "Solo un intermediario puede cambiar el estado de un producto"
+        );
+    }
+
+    if (usuario != intermediarioAsignado) {
+        throw new OperacionNoAutorizadaException(
+            "El usuario no está asignado a este producto"
+        );
+    }
+
+    validarCambioDeEtapa(nuevoEstado);
+
+    estado = nuevoEstado;
+
+    registrarHora(nuevoEstado, LocalDateTime.now(reloj));
+}
+```
+
+**Código después:**
+
+```java
+public void cambiarEstado(EstadoProducto nuevoEstado, Usuario usuario, Clock reloj) {
+
+    validarPermiso(usuario);
+
+    validarCambioDeEtapa(nuevoEstado);
+
+    estado = nuevoEstado;
+
+    registrarHora(nuevoEstado, LocalDateTime.now(reloj));
+}
+
+
+private void validarPermiso(Usuario usuario) {
+
+    if (usuario.getRol() != Rol.INTERMEDIARIO) {
+        throw new OperacionNoAutorizadaException(
+            "Solo un intermediario puede cambiar el estado de un producto"
+        );
+    }
+
+    if (usuario != intermediarioAsignado) {
+        throw new OperacionNoAutorizadaException(
+            "El usuario no está asignado a este producto"
+        );
+    }
+}
+```
+
+- Resultado: `Tests run: 8, Failures: 0, Errors: 0` – BUILD SUCCESS (el comportamiento no cambió).
+- Commit: `refactor(ciclo-3): separar la validacion de permisos en su propio metodo [REFACTOR]` ([`d3cd1f9`](https://github.com/fabio2152/lab4/commit/d3cd1f9))
+- Evidencia: [ciclo-3-refactor.txt](evidencias/ciclo-3-refactor.txt)
+
+### Decisiones de diseño y aprendizajes del ciclo 3
+
+- **Primero el rol, después la asignación:** si se hubiera validado primero la asignación, el productor también habría quedado rechazado (no es el asignado) y T07 habría pasado sin fallar.
+- **Se mantienen las dos validaciones** aunque la de asignación ya rechazaría al productor: cada una da un mensaje distinto y preciso, y T07 exige el suyo.
+- **Los permisos van antes que las etapas:** quien no tiene permiso no recibe información sobre el estado del producto.
+- **Parámetros que esperaron a su prueba:** `usuario` (recibido desde T02) recién se usó en T07, e `intermediarioAsignado` (recibido desde T01) recién se guardó en T08. Nada se implementó antes de que una prueba lo pidiera.
+- **Pendiente para ciclos opcionales:** comparar usuarios por `id` cuando exista el repositorio en memoria, validar RE-02/RE-03 al crear el producto, el historial (RE-09) y la visibilidad por rol (RE-10).
+
+---
+
+## Resultados
+
+**Ejecución final (`./mvnw test`):** `Tests run: 8, Failures: 0, Errors: 0, Skipped: 0` – BUILD SUCCESS.
+
+**Cobertura JaCoCo del paquete `dominio`** (clases construidas con TDD):
+
+| Clase | Líneas cubiertas | Ramas cubiertas |
+|---|---|---|
+| `Producto` | 31 / 31 | 14 / 14 |
+| `EstadoProducto` | 12 / 12 | 8 / 8 |
+| `Usuario` | 4 / 4 | – |
+| `Rol` | 3 / 3 | – |
+| `DuracionNoDisponibleException` | 2 / 2 | – |
+| `CambioDeEstadoNoPermitidoException` | 2 / 2 | – |
+| `OperacionNoAutorizadaException` | 2 / 2 | – |
+| **Total `dominio`** | **56 / 56 (100 %)** | **22 / 22 (100 %)** |
+
+La única clase sin cobertura es `QrutaTrazabilidadApplication` (el `main` de Spring Boot), que no es lógica de dominio. Que el dominio tenga 100 % de líneas y ramas cubiertas es consecuencia directa del proceso: **cada línea se escribió para hacer pasar una prueba que antes había fallado.**
+
+**Historial de commits del proceso:** 8 commits `test` (RED), 8 commits `feat` (GREEN) y 3 commits `refactor`, verificables con:
+
+```bash
+git log --oneline --reverse
+```
 
 ---
 
