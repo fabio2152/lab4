@@ -33,25 +33,7 @@ public class Producto {
             Clock reloj
     ) {
 
-        if (estado == EstadoProducto.ENTREGADO) {
-            throw new CambioDeEstadoNoPermitidoException(
-                "El producto ya fue entregado y no puede cambiar de estado"
-            );
-        }
-
-        boolean esLaSiguienteEtapa =
-            (estado == EstadoProducto.EN_ORIGEN
-                && nuevoEstado == EstadoProducto.EN_TRANSITO)
-            || (estado == EstadoProducto.EN_TRANSITO
-                && nuevoEstado == EstadoProducto.EN_DESTINO)
-            || (estado == EstadoProducto.EN_DESTINO
-                && nuevoEstado == EstadoProducto.ENTREGADO);
-
-        if (!esLaSiguienteEtapa) {
-            throw new CambioDeEstadoNoPermitidoException(
-                "No se puede pasar de " + estado + " a " + nuevoEstado
-            );
-        }
+        validarCambioDeEtapa(nuevoEstado);
 
         estado = nuevoEstado;
 
@@ -59,6 +41,24 @@ public class Producto {
             nuevoEstado,
             LocalDateTime.now(reloj)
         );
+    }
+
+
+    private void validarCambioDeEtapa(
+            EstadoProducto nuevoEstado
+    ) {
+
+        if (estado.esFinal()) {
+            throw new CambioDeEstadoNoPermitidoException(
+                "El producto ya fue entregado y no puede cambiar de estado"
+            );
+        }
+
+        if (!estado.puedePasarA(nuevoEstado)) {
+            throw new CambioDeEstadoNoPermitidoException(
+                "No se puede pasar de " + estado + " a " + nuevoEstado
+            );
+        }
     }
 
 
