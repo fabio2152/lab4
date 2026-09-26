@@ -25,6 +25,11 @@ public class Producto {
     }
 
 
+    public Long getId() {
+        return null;
+    }
+
+
     public EstadoProducto getEstado() {
         return estado;
     }
