@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: qruta-postgres
+    environment:
+      POSTGRES_DB: qruta_db
+      POSTGRES_USER: qruta
+      POSTGRES_PASSWORD: qruta
+    ports:
+      - "5433:5432"
+    volumes:
+      - qruta-datos:/var/lib/postgresql/data
+
+volumes:
+  qruta-datos:

@@ -29,20 +29,17 @@ public class CargaUsuariosDePrueba
     @Override
     public void run(String... args) {
 
-        usuarios.guardar(
-            new Usuario("productor1", "clave123", Rol.PRODUCTOR)
-        );
+        registrarSiNoExiste(new Usuario("productor1", "clave123", Rol.PRODUCTOR));
+        registrarSiNoExiste(new Usuario("intermediario1", "clave123", Rol.INTERMEDIARIO));
+        registrarSiNoExiste(new Usuario("intermediario2", "clave123", Rol.INTERMEDIARIO));
+        registrarSiNoExiste(new Usuario("regulador1", "clave123", Rol.REGULADOR));
+    }
 
-        usuarios.guardar(
-            new Usuario("intermediario1", "clave123", Rol.INTERMEDIARIO)
-        );
 
-        usuarios.guardar(
-            new Usuario("intermediario2", "clave123", Rol.INTERMEDIARIO)
-        );
+    private void registrarSiNoExiste(Usuario usuario) {
 
-        usuarios.guardar(
-            new Usuario("regulador1", "clave123", Rol.REGULADOR)
-        );
+        if (usuarios.buscarPorNombreUsuario(usuario.getNombreUsuario()).isEmpty()) {
+            usuarios.guardar(usuario);
+        }
     }
 }

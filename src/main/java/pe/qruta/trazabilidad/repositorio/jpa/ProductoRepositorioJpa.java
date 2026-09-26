@@ -1,0 +1,100 @@
+package pe.qruta.trazabilidad.repositorio.jpa;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import pe.qruta.trazabilidad.dominio.CambioEstado;
+import pe.qruta.trazabilidad.dominio.Producto;
+import pe.qruta.trazabilidad.repositorio.ProductoRepositorio;
+
+
+/**
+ * Implementación de ProductoRepositorio sobre PostgreSQL con Spring Data JPA.
+ * Traduce entre el Producto del dominio (Java puro) y ProductoEntidad (tabla).
+ */
+@Repository
+@Transactional
+public class ProductoRepositorioJpa
+        implements ProductoRepositorio {
+
+    private final ProductoJpa productos;
+
+    private final UsuarioJpa usuarios;
+
+
+    public ProductoRepositorioJpa(
+            ProductoJpa productos,
+            UsuarioJpa usuarios
+    ) {
+        this.productos = productos;
+        this.usuarios = usuarios;
+    }
+
+
+    @Override
+    public Producto guardar(Producto producto) {
+
+        ProductoEntidad entidad =
+            producto.getId() == null
+                ? new ProductoEntidad(
+                    producto.getNombre(),
+                    usuarioEntidad(producto.getProductor().getNombreUsuario()),
+                    usuarioEntidad(producto.getIntermediarioAsignado().getNombreUsuario())
+                )
+                : productos.findById(producto.getId()).orElseThrow();
+
+        entidad.actualizarDesde(producto);
+
+        // El historial solo crece: se agregan los cambios que todavía no están guardados.
+        List<CambioEstado> historial = producto.getHistorial();
+
+        for (int i = entidad.getHistorial().size(); i < historial.size(); i++) {
+
+            CambioEstado cambio = historial.get(i);
+
+            entidad.getHistorial().add(
+                new CambioEstadoEntidad(
+                    cambio,
+                    usuarioEntidad(cambio.usuario().getNombreUsuario())
+                )
+            );
+        }
+
+        ProductoEntidad guardada = productos.save(entidad);
+
+        producto.setId(guardada.getId());
+
+        return producto;
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Producto> buscarPorId(Long id) {
+        return productos
+                .findById(id)
+                .map(ProductoEntidad::aDominio);
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Producto> listarTodos() {
+        return productos
+                .findAll(Sort.by("id"))
+                .stream()
+                .map(ProductoEntidad::aDominio)
+                .toList();
+    }
+
+
+    private UsuarioEntidad usuarioEntidad(String nombreUsuario) {
+        return usuarios
+                .findByNombreUsuario(nombreUsuario)
+                .orElseThrow();
+    }
+}
