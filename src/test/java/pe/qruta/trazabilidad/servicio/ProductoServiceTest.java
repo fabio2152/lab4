@@ -256,4 +256,53 @@ class ProductoServiceTest {
         assertThat(productos)
             .containsExactly(palta);
     }
+
+
+    @Test
+    void cambiarElEstadoGuardaElProductoActualizadoEnElRepositorio() {
+
+        // Dado
+        RepositorioQueCuentaGuardados repositorio =
+            new RepositorioQueCuentaGuardados();
+
+        ProductoService servicioConContador =
+            new ProductoService(
+                repositorio,
+                Clock.fixed(
+                    OCHO_DE_LA_MANANA.atZone(ZONA_LIMA).toInstant(),
+                    ZONA_LIMA
+                )
+            );
+
+        Producto palta =
+            servicioConContador.crearProducto("Palta Hass", productor, intermediario);
+
+        // Cuando
+        servicioConContador.cambiarEstado(
+            palta.getId(),
+            EstadoProducto.EN_TRANSITO,
+            intermediario
+        );
+
+        // Entonces
+        assertThat(repositorio.vecesGuardado)
+            .isEqualTo(2);
+    }
+
+
+    /** Repositorio de prueba que cuenta cuántas veces se guardó un producto. */
+    private static class RepositorioQueCuentaGuardados
+            extends ProductoRepositorioEnMemoria {
+
+        private int vecesGuardado = 0;
+
+
+        @Override
+        public Producto guardar(Producto producto) {
+
+            vecesGuardado++;
+
+            return super.guardar(producto);
+        }
+    }
 }
