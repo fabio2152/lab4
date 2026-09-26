@@ -44,7 +44,9 @@ EN_ORIGEN  →  EN_TRANSITO  →  EN_DESTINO  →  ENTREGADO
 
 Cada regla incumplida se rechaza con una excepción propia y un mensaje claro (por ejemplo, *"El usuario no está asignado a este producto"*).
 
-**Alcance actual:** la lógica de dominio de estas reglas está construida con TDD en 3 ciclos y 8 pruebas (ver [docs/bitacora-tdd.md](docs/bitacora-tdd.md)). Quedan fuera de esta entrega: temperaturas y alertas, código QR, base de datos real y seguridad real (cifrado de contraseñas, tokens).
+Además, cada producto guarda un **historial** de cambios (estado anterior, estado nuevo, hora y usuario), y cada rol ve solo lo que le corresponde: el productor sus productos, el intermediario los asignados y el regulador todos.
+
+**Alcance actual:** el dominio y el servicio están construidos con TDD en 6 ciclos y 17 pruebas (ver [docs/bitacora-tdd.md](docs/bitacora-tdd.md)), y la plataforma se puede usar desde el navegador. Quedan fuera de esta entrega: temperaturas y alertas, código QR, base de datos real (los datos viven en memoria y se pierden al reiniciar) y seguridad real (cifrado de contraseñas, tokens).
 
 ## Tecnologías utilizadas
 
@@ -52,7 +54,8 @@ Cada regla incumplida se rechaza con una excepción propia y un mensaje claro (p
 |---|---|
 | Java 21 | Lenguaje de programación |
 | Spring Boot 4.1 | Framework de la aplicación |
-| Spring Web (`spring-boot-starter-web`) | Capa HTTP / API REST |
+| Spring Web (`spring-boot-starter-web`) | API REST y servidor de la página web |
+| HTML + CSS + JavaScript | Página web de la plataforma (sin librerías externas) |
 | JUnit 5 + AssertJ + Mockito (`spring-boot-starter-test`) | Pruebas automatizadas |
 | Maven + Maven Wrapper | Construcción y gestión de dependencias |
 | JaCoCo | Reporte de cobertura de pruebas |
@@ -87,7 +90,43 @@ Windows (CMD / PowerShell):
 mvnw.cmd spring-boot:run
 ```
 
-La aplicación queda disponible en `http://localhost:8080`.
+Abrir **http://localhost:8080** en el navegador.
+
+### Usuarios de prueba
+
+Se cargan al iniciar la aplicación. Todos usan la contraseña `clave123` (solo para la demostración: no se cifra).
+
+| Usuario | Rol | Qué puede hacer |
+|---|---|---|
+| `productor1` | PRODUCTOR | Registrar productos y asignarlos a un intermediario; ver los suyos |
+| `intermediario1` | INTERMEDIARIO | Avanzar por las etapas los productos que tiene asignados |
+| `intermediario2` | INTERMEDIARIO | Igual que el anterior (sirve para mostrar el rechazo por no estar asignado) |
+| `regulador1` | REGULADOR | Ver todos los productos, los usuarios y el historial |
+
+### Guion de la demostración
+
+1. Ingresar como `productor1` y registrar "Palta Hass" asignada a `intermediario1`: aparece en EN_ORIGEN.
+2. Ingresar como `intermediario2` y, en **Cambiar estado**, intentar pasar el producto #1 a EN_TRANSITO: *"El usuario no está asignado a este producto"*.
+3. Ingresar como `intermediario1` y pulsar **Pasar a EN_TRANSITO**: se registra la hora de inicio.
+4. En **Cambiar estado**, intentar pasar el producto #1 a ENTREGADO: *"No se puede pasar de EN_TRANSITO a ENTREGADO"*.
+5. Pulsar **Pasar a EN_DESTINO**: se registra la llegada y se muestra la duración del transporte.
+6. Ingresar como `regulador1` y pulsar **Ver historial**.
+
+### API REST
+
+Todas las peticiones, salvo el login, indican quién las hace con la cabecera `X-Usuario: <nombreUsuario>`.
+
+| Método | Ruta | Descripción |
+|---|---|---|
+| `POST` | `/api/login` | Iniciar sesión (`{"nombreUsuario", "contrasena"}`) |
+| `POST` | `/api/productos` | Crear un producto (`{"nombre", "intermediario"}`) |
+| `GET` | `/api/productos` | Listar los productos según el rol |
+| `PUT` | `/api/productos/{id}/estado` | Cambiar la etapa (`{"estado": "EN_TRANSITO"}`) |
+| `GET` | `/api/productos/{id}/historial` | Historial de cambios del producto |
+| `GET` | `/api/usuarios` | Productores e intermediarios (solo el regulador) |
+| `GET` | `/api/usuarios/intermediarios` | Intermediarios disponibles para asignar |
+
+Las reglas incumplidas responden con su mensaje: `403` (sin permiso), `409` (cambio de etapa no permitido o duración no disponible), `404` (producto inexistente) y `401` (credenciales incorrectas).
 
 ## Procedimiento para ejecutar las pruebas
 
@@ -114,10 +153,18 @@ lab4/
 ├── .github/workflows/ci.yml   # Integración continua
 ├── docs/
 │   ├── bitacora-tdd.md        # Registro de ciclos RED-GREEN-REFACTOR
-│   └── evidencias/            # Capturas de pantalla
+│   └── evidencias/            # Salidas de ./mvnw test de cada fase y capturas
 ├── src/
-│   ├── main/java/pe/qruta/trazabilidad/   # Código de producción
-│   └── test/java/pe/qruta/trazabilidad/   # Pruebas automatizadas
+│   ├── main/java/pe/qruta/trazabilidad/
+│   │   ├── dominio/           # Producto, EstadoProducto, Usuario, Rol, CambioEstado, excepciones
+│   │   ├── servicio/          # ProductoService, LoginService
+│   │   ├── repositorio/       # Repositorios en memoria
+│   │   ├── controlador/       # API REST
+│   │   └── configuracion/     # Beans de Spring, reloj del sistema y usuarios de prueba
+│   ├── main/resources/static/ # Página web (index.html, app.js, estilos.css)
+│   └── test/java/pe/qruta/trazabilidad/
+│       ├── dominio/           # ProductoTest (T01–T08)
+│       └── servicio/          # ProductoServiceTest (T09–T15), LoginServiceTest (T16–T17)
 ├── pom.xml
 ├── mvnw / mvnw.cmd
 └── README.md
