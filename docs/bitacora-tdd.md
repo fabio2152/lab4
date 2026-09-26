@@ -82,7 +82,7 @@ expected: EN_ORIGEN
 ```
 
 - Commit: `test(ciclo-1): T01 producto recien creado esta en EN_ORIGEN [RED]` ([`50337de`](https://github.com/fabio2152/lab4/commit/50337de))
-- Evidencia: [ciclo-1-T01-red.txt](evidencias/ciclo-1-T01-red.txt)
+- Evidencia: [ciclo-1-T01-red.txt](evidencias/ciclo-1-T01-red.txt) · Captura: [1rojo.png](evidencias/1rojo.png)
 
 **🟢 GREEN**
 
@@ -96,7 +96,7 @@ public EstadoProducto getEstado() {
 
 - Resultado: `Tests run: 1, Failures: 0, Errors: 0` – BUILD SUCCESS.
 - Commit: `feat(ciclo-1): T01 producto recien creado esta en EN_ORIGEN [GREEN]` ([`f833eb0`](https://github.com/fabio2152/lab4/commit/f833eb0))
-- Evidencia: [ciclo-1-T01-green.txt](evidencias/ciclo-1-T01-green.txt)
+- Evidencia: [ciclo-1-T01-green.txt](evidencias/ciclo-1-T01-green.txt) · Captura: [1verde.png](evidencias/1verde.png)
 
 ### T02 – Al pasar a EN_TRANSITO se guarda la hora de inicio (RE-07)
 
@@ -118,7 +118,7 @@ expected: EN_TRANSITO
 ```
 
 - Commit: `test(ciclo-1): T02 al pasar a EN_TRANSITO se guarda la hora de inicio del transporte [RED]` ([`e276c29`](https://github.com/fabio2152/lab4/commit/e276c29))
-- Evidencia: [ciclo-1-T02-red.txt](evidencias/ciclo-1-T02-red.txt)
+- Evidencia: [ciclo-1-T02-red.txt](evidencias/ciclo-1-T02-red.txt) · Captura: [2rojo.png](evidencias/2rojo.png)
 
 **🟢 GREEN**
 
@@ -133,7 +133,7 @@ public void cambiarEstado(EstadoProducto nuevoEstado, Usuario usuario, Clock rel
 
 - Resultado: `Tests run: 2, Failures: 0, Errors: 0` – BUILD SUCCESS.
 - Commit: `feat(ciclo-1): T02 al pasar a EN_TRANSITO se guarda la hora de inicio del transporte [GREEN]` ([`61ef540`](https://github.com/fabio2152/lab4/commit/61ef540))
-- Evidencia: [ciclo-1-T02-green.txt](evidencias/ciclo-1-T02-green.txt)
+- Evidencia: [ciclo-1-T02-green.txt](evidencias/ciclo-1-T02-green.txt) · Captura: [2verde.png](evidencias/2verde.png)
 
 ### T03 – Al pasar a EN_DESTINO se guarda la llegada y se calcula la duración (RE-07, RE-08)
 
@@ -155,7 +155,7 @@ expected: 2026-09-01T14:30 (java.time.LocalDateTime)
 ```
 
 - Commit: `test(ciclo-1): T03 al pasar a EN_DESTINO se guarda la hora de llegada y la duracion del transporte [RED]` ([`e40e9cd`](https://github.com/fabio2152/lab4/commit/e40e9cd))
-- Evidencia: [ciclo-1-T03-red.txt](evidencias/ciclo-1-T03-red.txt)
+- Evidencia: [ciclo-1-T03-red.txt](evidencias/ciclo-1-T03-red.txt) · Captura: [3rojo.png](evidencias/3rojo.png)
 
 **🟢 GREEN**
 
@@ -177,7 +177,7 @@ public Duration getDuracionTransporte() {
 
 - Resultado: `Tests run: 3, Failures: 0, Errors: 0` – BUILD SUCCESS.
 - Commit: `feat(ciclo-1): T03 al pasar a EN_DESTINO se guarda la hora de llegada y la duracion del transporte [GREEN]` ([`a2bdd9f`](https://github.com/fabio2152/lab4/commit/a2bdd9f))
-- Evidencia: [ciclo-1-T03-green.txt](evidencias/ciclo-1-T03-green.txt)
+- Evidencia: [ciclo-1-T03-green.txt](evidencias/ciclo-1-T03-green.txt) · Captura: [3verde.png](evidencias/3verde.png)
 
 ### 🔵 REFACTOR del ciclo 1
 
@@ -271,7 +271,7 @@ but was:
 ```
 
 - Commit: `test(ciclo-2): T04 pedir la duracion de un producto EN_TRANSITO se rechaza [RED]` ([`6d5bdf6`](https://github.com/fabio2152/lab4/commit/6d5bdf6))
-- Evidencia: [ciclo-2-T04-red.txt](evidencias/ciclo-2-T04-red.txt)
+- Evidencia: [ciclo-2-T04-red.txt](evidencias/ciclo-2-T04-red.txt) · Captura: [4rojo.png](evidencias/4rojo.png)
 
 **🟢 GREEN**
 
@@ -292,7 +292,7 @@ public Duration getDuracionTransporte() {
 
 - Resultado: `Tests run: 4, Failures: 0, Errors: 0` – BUILD SUCCESS.
 - Commit: `feat(ciclo-2): T04 pedir la duracion de un producto EN_TRANSITO se rechaza [GREEN]` ([`dda7055`](https://github.com/fabio2152/lab4/commit/dda7055))
-- Evidencia: [ciclo-2-T04-green.txt](evidencias/ciclo-2-T04-green.txt)
+- Evidencia: [ciclo-2-T04-green.txt](evidencias/ciclo-2-T04-green.txt) · Captura: [4verde.png](evidencias/4verde.png)
 
 ### T05 – Un producto ENTREGADO no puede cambiar de estado (RE-06)
 
@@ -314,7 +314,7 @@ Expecting code to raise a throwable.
 ```
 
 - Commit: `test(ciclo-2): T05 un producto ENTREGADO no puede cambiar de estado [RED]` ([`0452480`](https://github.com/fabio2152/lab4/commit/0452480))
-- Evidencia: [ciclo-2-T05-red.txt](evidencias/ciclo-2-T05-red.txt)
+- Evidencia: [ciclo-2-T05-red.txt](evidencias/ciclo-2-T05-red.txt) · Captura: [5rojo.png](evidencias/5rojo.png)
 
 **🟢 GREEN**
 
@@ -330,7 +330,7 @@ if (estado == EstadoProducto.ENTREGADO) {
 
 - Resultado: `Tests run: 5, Failures: 0, Errors: 0` – BUILD SUCCESS.
 - Commit: `feat(ciclo-2): T05 un producto ENTREGADO no puede cambiar de estado [GREEN]` ([`dd8ccc4`](https://github.com/fabio2152/lab4/commit/dd8ccc4))
-- Evidencia: [ciclo-2-T05-green.txt](evidencias/ciclo-2-T05-green.txt)
+- Evidencia: [ciclo-2-T05-green.txt](evidencias/ciclo-2-T05-green.txt) · Captura: [5verde.png](evidencias/5verde.png)
 
 ### T06 – Pasar de EN_ORIGEN directamente a EN_DESTINO se rechaza (RE-05)
 
@@ -352,7 +352,7 @@ Expecting code to raise a throwable.
 ```
 
 - Commit: `test(ciclo-2): T06 pasar de EN_ORIGEN directamente a EN_DESTINO se rechaza [RED]` ([`f76fa76`](https://github.com/fabio2152/lab4/commit/f76fa76))
-- Evidencia: [ciclo-2-T06-red.txt](evidencias/ciclo-2-T06-red.txt)
+- Evidencia: [ciclo-2-T06-red.txt](evidencias/ciclo-2-T06-red.txt) · Captura: [6rojo.png](evidencias/6rojo.png)
 
 **🟢 GREEN**
 
@@ -376,7 +376,7 @@ if (!esLaSiguienteEtapa) {
 
 - Resultado: `Tests run: 6, Failures: 0, Errors: 0` – BUILD SUCCESS.
 - Commit: `feat(ciclo-2): T06 pasar de EN_ORIGEN directamente a EN_DESTINO se rechaza [GREEN]` ([`dc8fa59`](https://github.com/fabio2152/lab4/commit/dc8fa59))
-- Evidencia: [ciclo-2-T06-green.txt](evidencias/ciclo-2-T06-green.txt)
+- Evidencia: [ciclo-2-T06-green.txt](evidencias/ciclo-2-T06-green.txt) · Captura: [6verde.png](evidencias/6verde.png)
 
 ### 🔵 REFACTOR del ciclo 2
 
@@ -505,7 +505,7 @@ Expecting code to raise a throwable.
 ```
 
 - Commit: `test(ciclo-3): T07 el productor no puede cambiar el estado de su producto [RED]` ([`50e78ea`](https://github.com/fabio2152/lab4/commit/50e78ea))
-- Evidencia: [ciclo-3-T07-red.txt](evidencias/ciclo-3-T07-red.txt)
+- Evidencia: [ciclo-3-T07-red.txt](evidencias/ciclo-3-T07-red.txt) · Captura: [7rojo.png](evidencias/7rojo.png)
 
 **🟢 GREEN**
 
@@ -521,7 +521,7 @@ if (usuario.getRol() != Rol.INTERMEDIARIO) {
 
 - Resultado: `Tests run: 7, Failures: 0, Errors: 0` – BUILD SUCCESS.
 - Commit: `feat(ciclo-3): T07 el productor no puede cambiar el estado de su producto [GREEN]` ([`c97cd14`](https://github.com/fabio2152/lab4/commit/c97cd14))
-- Evidencia: [ciclo-3-T07-green.txt](evidencias/ciclo-3-T07-green.txt)
+- Evidencia: [ciclo-3-T07-green.txt](evidencias/ciclo-3-T07-green.txt) · Captura: [7verde.png](evidencias/7verde.png)
 
 ### T08 – Un intermediario no asignado no puede cambiar el estado (RE-04)
 
@@ -545,7 +545,7 @@ Expecting code to raise a throwable.
 ```
 
 - Commit: `test(ciclo-3): T08 un intermediario no asignado no puede cambiar el estado [RED]` ([`eb65b6f`](https://github.com/fabio2152/lab4/commit/eb65b6f))
-- Evidencia: [ciclo-3-T08-red.txt](evidencias/ciclo-3-T08-red.txt)
+- Evidencia: [ciclo-3-T08-red.txt](evidencias/ciclo-3-T08-red.txt) · Captura: [8rojo.png](evidencias/8rojo.png)
 
 **🟢 GREEN**
 
@@ -565,7 +565,7 @@ if (usuario != intermediarioAsignado) {
 
 - Resultado: `Tests run: 8, Failures: 0, Errors: 0` – BUILD SUCCESS.
 - Commit: `feat(ciclo-3): T08 un intermediario no asignado no puede cambiar el estado [GREEN]` ([`9a040c6`](https://github.com/fabio2152/lab4/commit/9a040c6))
-- Evidencia: [ciclo-3-T08-green.txt](evidencias/ciclo-3-T08-green.txt)
+- Evidencia: [ciclo-3-T08-green.txt](evidencias/ciclo-3-T08-green.txt) · Captura: [8verde.png](evidencias/8verde.png)
 
 ### 🔵 REFACTOR del ciclo 3
 
