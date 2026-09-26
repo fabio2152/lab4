@@ -29,6 +29,8 @@ class ProductoServiceTest {
 
     private Usuario intermediario;
 
+    private Usuario otroIntermediario;
+
     private ProductoService servicio;
 
 
@@ -40,6 +42,9 @@ class ProductoServiceTest {
 
         intermediario =
             new Usuario("intermediario1", Rol.INTERMEDIARIO);
+
+        otroIntermediario =
+            new Usuario("intermediario2", Rol.INTERMEDIARIO);
 
         Clock relojDelSistema =
             Clock.fixed(
@@ -84,9 +89,6 @@ class ProductoServiceTest {
     void elReguladorVeTodosLosProductos() {
 
         // Dado
-        Usuario otroIntermediario =
-            new Usuario("intermediario2", Rol.INTERMEDIARIO);
-
         Usuario regulador =
             new Usuario("regulador1", Rol.REGULADOR);
 
@@ -132,9 +134,6 @@ class ProductoServiceTest {
     void elIntermediarioVeSoloSusProductosAsignados() {
 
         // Dado
-        Usuario otroIntermediario =
-            new Usuario("intermediario2", Rol.INTERMEDIARIO);
-
         Producto palta =
             servicio.crearProducto("Palta Hass", productor, intermediario);
 

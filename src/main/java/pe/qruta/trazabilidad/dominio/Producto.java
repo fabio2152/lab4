@@ -50,6 +50,16 @@ public class Producto {
     }
 
 
+    public boolean esVisiblePara(Usuario usuario) {
+
+        return switch (usuario.getRol()) {
+            case PRODUCTOR -> productor == usuario;
+            case INTERMEDIARIO -> intermediarioAsignado == usuario;
+            case REGULADOR -> true;
+        };
+    }
+
+
     public EstadoProducto getEstado() {
         return estado;
     }
