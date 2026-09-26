@@ -77,6 +77,6 @@ public class ProductoService {
 
 
     public List<CambioEstado> obtenerHistorial(Long idProducto) {
-        return null;
+        return buscarPorId(idProducto).getHistorial();
     }
 }

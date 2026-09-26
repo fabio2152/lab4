@@ -3,6 +3,8 @@ package pe.qruta.trazabilidad.dominio;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class Producto {
@@ -18,6 +20,8 @@ public class Producto {
     private LocalDateTime horaInicioTransporte;
 
     private LocalDateTime horaLlegada;
+
+    private final List<CambioEstado> historial = new ArrayList<>();
 
 
     public Producto(
@@ -75,12 +79,15 @@ public class Producto {
 
         validarCambioDeEtapa(nuevoEstado);
 
+        LocalDateTime ahora = LocalDateTime.now(reloj);
+
+        historial.add(
+            new CambioEstado(estado, nuevoEstado, ahora, usuario)
+        );
+
         estado = nuevoEstado;
 
-        registrarHora(
-            nuevoEstado,
-            LocalDateTime.now(reloj)
-        );
+        registrarHora(nuevoEstado, ahora);
     }
 
 
@@ -132,6 +139,11 @@ public class Producto {
         if (nuevoEstado == EstadoProducto.EN_DESTINO) {
             horaLlegada = ahora;
         }
+    }
+
+
+    public List<CambioEstado> getHistorial() {
+        return historial;
     }
 
 
