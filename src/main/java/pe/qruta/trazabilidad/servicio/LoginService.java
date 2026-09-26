@@ -6,10 +6,13 @@ import pe.qruta.trazabilidad.repositorio.UsuarioRepositorioEnMemoria;
 
 public class LoginService {
 
+    private final UsuarioRepositorioEnMemoria usuarios;
+
 
     public LoginService(
             UsuarioRepositorioEnMemoria usuarios
     ) {
+        this.usuarios = usuarios;
     }
 
 
@@ -17,6 +20,9 @@ public class LoginService {
             String nombreUsuario,
             String contrasena
     ) {
-        return null;
+
+        return usuarios
+                .buscarPorNombreUsuario(nombreUsuario)
+                .orElse(null);
     }
 }

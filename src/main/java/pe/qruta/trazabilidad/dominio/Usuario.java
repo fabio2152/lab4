@@ -3,6 +3,8 @@ package pe.qruta.trazabilidad.dominio;
 
 public class Usuario {
 
+    private final String nombreUsuario;
+
     private final Rol rol;
 
 
@@ -10,6 +12,7 @@ public class Usuario {
             String nombreUsuario,
             Rol rol
     ) {
+        this.nombreUsuario = nombreUsuario;
         this.rol = rol;
     }
 
@@ -20,6 +23,11 @@ public class Usuario {
             Rol rol
     ) {
         this(nombreUsuario, rol);
+    }
+
+
+    public String getNombreUsuario() {
+        return nombreUsuario;
     }
 
 
