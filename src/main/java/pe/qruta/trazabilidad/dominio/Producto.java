@@ -109,7 +109,7 @@ public class Producto {
             );
         }
 
-        if (usuario != intermediarioAsignado) {
+        if (!usuario.equals(intermediarioAsignado)) {
             throw new OperacionNoAutorizadaException(
                 "El usuario no está asignado a este producto"
             );

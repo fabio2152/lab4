@@ -42,4 +42,17 @@ public class Usuario {
     public boolean tieneContrasena(String contrasena) {
         return this.contrasena.equals(contrasena);
     }
+
+
+    @Override
+    public boolean equals(Object otro) {
+        return otro instanceof Usuario usuario
+            && nombreUsuario.equals(usuario.nombreUsuario);
+    }
+
+
+    @Override
+    public int hashCode() {
+        return nombreUsuario.hashCode();
+    }
 }
