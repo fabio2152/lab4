@@ -11,6 +11,8 @@ public class Producto {
 
     private LocalDateTime horaInicioTransporte;
 
+    private LocalDateTime horaLlegada;
+
 
     public Producto(
             String nombre,
@@ -33,7 +35,13 @@ public class Producto {
 
         estado = nuevoEstado;
 
-        horaInicioTransporte = LocalDateTime.now(reloj);
+        if (nuevoEstado == EstadoProducto.EN_TRANSITO) {
+            horaInicioTransporte = LocalDateTime.now(reloj);
+        }
+
+        if (nuevoEstado == EstadoProducto.EN_DESTINO) {
+            horaLlegada = LocalDateTime.now(reloj);
+        }
     }
 
 
@@ -43,11 +51,11 @@ public class Producto {
 
 
     public LocalDateTime getHoraLlegada() {
-        return null;
+        return horaLlegada;
     }
 
 
     public Duration getDuracionTransporte() {
-        return null;
+        return Duration.between(horaInicioTransporte, horaLlegada);
     }
 }
