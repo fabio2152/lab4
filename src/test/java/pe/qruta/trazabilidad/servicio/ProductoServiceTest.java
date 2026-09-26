@@ -104,4 +104,26 @@ class ProductoServiceTest {
         assertThat(productos)
             .containsExactly(palta, mango);
     }
+
+
+    @Test
+    void elProductorVeSoloLosProductosQueCreo() {
+
+        // Dado
+        Usuario otroProductor =
+            new Usuario("productor2", Rol.PRODUCTOR);
+
+        Producto palta =
+            servicio.crearProducto("Palta Hass", productor, intermediario);
+
+        servicio.crearProducto("Mango Kent", otroProductor, intermediario);
+
+        // Cuando
+        List<Producto> productos =
+            servicio.listarProductos(productor);
+
+        // Entonces
+        assertThat(productos)
+            .containsExactly(palta);
+    }
 }
