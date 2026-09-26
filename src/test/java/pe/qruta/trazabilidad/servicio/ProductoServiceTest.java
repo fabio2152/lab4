@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -76,5 +77,31 @@ class ProductoServiceTest {
 
         assertThat(guardado.getEstado())
             .isEqualTo(EstadoProducto.EN_ORIGEN);
+    }
+
+
+    @Test
+    void elReguladorVeTodosLosProductos() {
+
+        // Dado
+        Usuario otroIntermediario =
+            new Usuario("intermediario2", Rol.INTERMEDIARIO);
+
+        Usuario regulador =
+            new Usuario("regulador1", Rol.REGULADOR);
+
+        Producto palta =
+            servicio.crearProducto("Palta Hass", productor, intermediario);
+
+        Producto mango =
+            servicio.crearProducto("Mango Kent", productor, otroIntermediario);
+
+        // Cuando
+        List<Producto> productos =
+            servicio.listarProductos(regulador);
+
+        // Entonces
+        assertThat(productos)
+            .containsExactly(palta, mango);
     }
 }

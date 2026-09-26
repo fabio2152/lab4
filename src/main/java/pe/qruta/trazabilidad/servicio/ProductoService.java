@@ -1,6 +1,7 @@
 package pe.qruta.trazabilidad.servicio;
 
 import java.time.Clock;
+import java.util.List;
 
 import pe.qruta.trazabilidad.dominio.Producto;
 import pe.qruta.trazabilidad.dominio.Usuario;
@@ -38,5 +39,10 @@ public class ProductoService {
         return repositorio
                 .buscarPorId(id)
                 .orElse(null);
+    }
+
+
+    public List<Producto> listarProductos(Usuario usuario) {
+        return null;
     }
 }
