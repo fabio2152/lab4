@@ -6,6 +6,10 @@ import java.time.LocalDateTime;
 
 public class Producto {
 
+    private EstadoProducto estado = EstadoProducto.EN_ORIGEN;
+
+    private LocalDateTime horaInicioTransporte;
+
 
     public Producto(
             String nombre,
@@ -16,7 +20,7 @@ public class Producto {
 
 
     public EstadoProducto getEstado() {
-        return EstadoProducto.EN_ORIGEN;
+        return estado;
     }
 
 
@@ -25,10 +29,14 @@ public class Producto {
             Usuario usuario,
             Clock reloj
     ) {
+
+        estado = nuevoEstado;
+
+        horaInicioTransporte = LocalDateTime.now(reloj);
     }
 
 
     public LocalDateTime getHoraInicioTransporte() {
-        return null;
+        return horaInicioTransporte;
     }
 }
