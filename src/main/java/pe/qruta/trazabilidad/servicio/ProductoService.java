@@ -43,6 +43,6 @@ public class ProductoService {
 
 
     public List<Producto> listarProductos(Usuario usuario) {
-        return null;
+        return repositorio.listarTodos();
     }
 }

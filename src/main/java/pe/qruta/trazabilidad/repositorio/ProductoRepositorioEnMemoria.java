@@ -33,4 +33,9 @@ public class ProductoRepositorioEnMemoria {
                 .filter(producto -> producto.getId().equals(id))
                 .findFirst();
     }
+
+
+    public List<Producto> listarTodos() {
+        return new ArrayList<>(productos);
+    }
 }
