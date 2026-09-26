@@ -7,6 +7,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 
@@ -15,16 +16,27 @@ class ProductoTest {
     private static final ZoneId ZONA_LIMA =
         ZoneId.of("America/Lima");
 
+    private Usuario productor;
+
+    private Usuario intermediario;
+
+
+    @BeforeEach
+    void prepararUsuarios() {
+
+        productor =
+            new Usuario("productor1", Rol.PRODUCTOR);
+
+        intermediario =
+            new Usuario("intermediario1", Rol.INTERMEDIARIO);
+    }
+
 
     @Test
     void unProductoRecienCreadoEstaEnOrigen() {
 
         // Dado
-        Usuario productor =
-            new Usuario("productor1", Rol.PRODUCTOR);
-
-        Usuario intermediario =
-            new Usuario("intermediario1", Rol.INTERMEDIARIO);
+        // un productor y un intermediario (prepararUsuarios)
 
         // Cuando
         Producto producto =
@@ -40,29 +52,16 @@ class ProductoTest {
     void alPasarAEnTransitoSeGuardaLaHoraDeInicioDelTransporte() {
 
         // Dado
-        Usuario productor =
-            new Usuario("productor1", Rol.PRODUCTOR);
-
-        Usuario intermediario =
-            new Usuario("intermediario1", Rol.INTERMEDIARIO);
-
         Producto producto =
             new Producto("Palta Hass", productor, intermediario);
 
-        LocalDateTime ochoDeLaManana =
-            LocalDateTime.of(2026, 9, 1, 8, 0);
-
-        Clock relojALasOcho =
-            Clock.fixed(
-                ochoDeLaManana.atZone(ZONA_LIMA).toInstant(),
-                ZONA_LIMA
-            );
+        LocalDateTime ochoDeLaManana = horaDelDia(8, 0);
 
         // Cuando
         producto.cambiarEstado(
             EstadoProducto.EN_TRANSITO,
             intermediario,
-            relojALasOcho
+            relojFijoEn(ochoDeLaManana)
         );
 
         // Entonces
@@ -78,44 +77,24 @@ class ProductoTest {
     void alPasarAEnDestinoSeGuardaLaHoraDeLlegadaYSeCalculaLaDuracionDelTransporte() {
 
         // Dado
-        Usuario productor =
-            new Usuario("productor1", Rol.PRODUCTOR);
-
-        Usuario intermediario =
-            new Usuario("intermediario1", Rol.INTERMEDIARIO);
-
         Producto producto =
             new Producto("Palta Hass", productor, intermediario);
 
-        LocalDateTime ochoDeLaManana =
-            LocalDateTime.of(2026, 9, 1, 8, 0);
+        LocalDateTime ochoDeLaManana = horaDelDia(8, 0);
 
-        Clock relojALasOcho =
-            Clock.fixed(
-                ochoDeLaManana.atZone(ZONA_LIMA).toInstant(),
-                ZONA_LIMA
-            );
-
-        LocalDateTime dosYMediaDeLaTarde =
-            LocalDateTime.of(2026, 9, 1, 14, 30);
-
-        Clock relojALasDosYMedia =
-            Clock.fixed(
-                dosYMediaDeLaTarde.atZone(ZONA_LIMA).toInstant(),
-                ZONA_LIMA
-            );
+        LocalDateTime dosYMediaDeLaTarde = horaDelDia(14, 30);
 
         producto.cambiarEstado(
             EstadoProducto.EN_TRANSITO,
             intermediario,
-            relojALasOcho
+            relojFijoEn(ochoDeLaManana)
         );
 
         // Cuando
         producto.cambiarEstado(
             EstadoProducto.EN_DESTINO,
             intermediario,
-            relojALasDosYMedia
+            relojFijoEn(dosYMediaDeLaTarde)
         );
 
         // Entonces
@@ -124,5 +103,23 @@ class ProductoTest {
 
         assertThat(producto.getDuracionTransporte())
             .isEqualTo(Duration.ofHours(6).plusMinutes(30));
+    }
+
+
+    private LocalDateTime horaDelDia(
+            int hora,
+            int minuto
+    ) {
+        return LocalDateTime.of(2026, 9, 1, hora, minuto);
+    }
+
+
+    private Clock relojFijoEn(
+            LocalDateTime fechaHora
+    ) {
+        return Clock.fixed(
+            fechaHora.atZone(ZONA_LIMA).toInstant(),
+            ZONA_LIMA
+        );
     }
 }

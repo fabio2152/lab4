@@ -35,12 +35,24 @@ public class Producto {
 
         estado = nuevoEstado;
 
+        registrarHora(
+            nuevoEstado,
+            LocalDateTime.now(reloj)
+        );
+    }
+
+
+    private void registrarHora(
+            EstadoProducto nuevoEstado,
+            LocalDateTime ahora
+    ) {
+
         if (nuevoEstado == EstadoProducto.EN_TRANSITO) {
-            horaInicioTransporte = LocalDateTime.now(reloj);
+            horaInicioTransporte = ahora;
         }
 
         if (nuevoEstado == EstadoProducto.EN_DESTINO) {
-            horaLlegada = LocalDateTime.now(reloj);
+            horaLlegada = ahora;
         }
     }
 
