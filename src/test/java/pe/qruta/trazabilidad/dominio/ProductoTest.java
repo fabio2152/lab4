@@ -8,6 +8,7 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -258,6 +259,51 @@ class ProductoTest {
             )
         )
             .doesNotThrowAnyException();
+    }
+
+
+    @Test
+    void unProductoReconstruidoEnTransitoCalculaLaDuracionAlLlegar() {
+
+        // Dado
+        LocalDateTime ochoDeLaManana = horaDelDia(8, 0);
+
+        Producto reconstruido =
+            Producto.reconstruir(
+                7L,
+                "Palta Hass",
+                productor,
+                intermediario,
+                EstadoProducto.EN_TRANSITO,
+                ochoDeLaManana,
+                null,
+                List.of(
+                    new CambioEstado(
+                        EstadoProducto.EN_ORIGEN,
+                        EstadoProducto.EN_TRANSITO,
+                        ochoDeLaManana,
+                        intermediario
+                    )
+                )
+            );
+
+        // Cuando
+        assertThat(reconstruido.getEstado())
+            .isEqualTo(EstadoProducto.EN_TRANSITO);
+
+        reconstruido.cambiarEstado(
+            EstadoProducto.EN_DESTINO,
+            intermediario,
+            relojFijoEn(horaDelDia(14, 30))
+        );
+
+        // Entonces
+        assertThat(reconstruido.getId()).isEqualTo(7L);
+
+        assertThat(reconstruido.getDuracionTransporte())
+            .isEqualTo(Duration.ofHours(6).plusMinutes(30));
+
+        assertThat(reconstruido.getHistorial()).hasSize(2);
     }
 
 

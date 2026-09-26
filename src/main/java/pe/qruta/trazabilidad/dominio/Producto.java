@@ -37,6 +37,20 @@ public class Producto {
     }
 
 
+    public static Producto reconstruir(
+            Long id,
+            String nombre,
+            Usuario productor,
+            Usuario intermediarioAsignado,
+            EstadoProducto estado,
+            LocalDateTime horaInicioTransporte,
+            LocalDateTime horaLlegada,
+            List<CambioEstado> historial
+    ) {
+        return new Producto(nombre, productor, intermediarioAsignado);
+    }
+
+
     public Long getId() {
         return id;
     }
