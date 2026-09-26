@@ -126,4 +126,26 @@ class ProductoServiceTest {
         assertThat(productos)
             .containsExactly(palta);
     }
+
+
+    @Test
+    void elIntermediarioVeSoloSusProductosAsignados() {
+
+        // Dado
+        Usuario otroIntermediario =
+            new Usuario("intermediario2", Rol.INTERMEDIARIO);
+
+        Producto palta =
+            servicio.crearProducto("Palta Hass", productor, intermediario);
+
+        servicio.crearProducto("Mango Kent", productor, otroIntermediario);
+
+        // Cuando
+        List<Producto> productos =
+            servicio.listarProductos(intermediario);
+
+        // Entonces
+        assertThat(productos)
+            .containsExactly(palta);
+    }
 }
