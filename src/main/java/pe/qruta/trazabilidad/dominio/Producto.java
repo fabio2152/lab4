@@ -66,7 +66,7 @@ public class Producto {
 
         return switch (usuario.getRol()) {
             case PRODUCTOR -> productor == usuario;
-            case INTERMEDIARIO -> intermediarioAsignado == usuario;
+            case INTERMEDIARIO -> intermediarioAsignado.equals(usuario);
             case REGULADOR -> true;
         };
     }
