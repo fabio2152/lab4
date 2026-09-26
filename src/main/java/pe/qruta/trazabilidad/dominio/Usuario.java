@@ -3,7 +3,7 @@ package pe.qruta.trazabilidad.dominio;
 
 public class Usuario {
 
-    private Rol rol;
+    private final Rol rol;
 
 
     public Usuario(
