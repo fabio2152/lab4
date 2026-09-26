@@ -191,6 +191,28 @@ class ProductoTest {
     }
 
 
+    @Test
+    void elProductorNoPuedeCambiarElEstadoDeSuProducto() {
+
+        // Dado
+        Producto producto =
+            new Producto("Palta Hass", productor, intermediario);
+
+        // Cuando / Entonces
+        assertThatThrownBy(() ->
+            producto.cambiarEstado(
+                EstadoProducto.EN_TRANSITO,
+                productor,
+                relojFijoEn(horaDelDia(8, 0))
+            )
+        )
+            .isInstanceOf(OperacionNoAutorizadaException.class)
+            .hasMessage(
+                "Solo un intermediario puede cambiar el estado de un producto"
+            );
+    }
+
+
     private LocalDateTime horaDelDia(
             int hora,
             int minuto
