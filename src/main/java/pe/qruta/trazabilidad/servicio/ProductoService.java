@@ -65,7 +65,11 @@ public class ProductoService {
         Producto producto =
             repositorio
                 .buscarPorId(idProducto)
-                .orElse(null);
+                .orElseThrow(
+                    () -> new ProductoNoEncontradoException(
+                        "No existe un producto con id " + idProducto
+                    )
+                );
 
         producto.cambiarEstado(nuevoEstado, usuario, reloj);
     }
