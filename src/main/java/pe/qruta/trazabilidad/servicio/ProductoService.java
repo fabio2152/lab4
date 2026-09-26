@@ -13,12 +13,15 @@ public class ProductoService {
 
     private final ProductoRepositorioEnMemoria repositorio;
 
+    private final Clock reloj;
+
 
     public ProductoService(
             ProductoRepositorioEnMemoria repositorio,
             Clock reloj
     ) {
         this.repositorio = repositorio;
+        this.reloj = reloj;
     }
 
 
@@ -58,5 +61,12 @@ public class ProductoService {
             EstadoProducto nuevoEstado,
             Usuario usuario
     ) {
+
+        Producto producto =
+            repositorio
+                .buscarPorId(idProducto)
+                .orElse(null);
+
+        producto.cambiarEstado(nuevoEstado, usuario, reloj);
     }
 }
