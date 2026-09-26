@@ -19,22 +19,34 @@ Repositorio: https://github.com/fabio2152/lab4
 | T06 | 2 | Error | RE-05 | Pasar de EN_ORIGEN a EN_DESTINO se rechaza | [`f76fa76`](https://github.com/fabio2152/lab4/commit/f76fa76) | [`dc8fa59`](https://github.com/fabio2152/lab4/commit/dc8fa59) | ✅ |
 | T07 | 3 | Error | RE-04 | El productor no puede cambiar el estado | [`50e78ea`](https://github.com/fabio2152/lab4/commit/50e78ea) | [`c97cd14`](https://github.com/fabio2152/lab4/commit/c97cd14) | ✅ |
 | T08 | 3 | Error | RE-04 | Un intermediario no asignado no puede cambiar el estado | [`eb65b6f`](https://github.com/fabio2152/lab4/commit/eb65b6f) | [`9a040c6`](https://github.com/fabio2152/lab4/commit/9a040c6) | ✅ |
+| T09 | 4 | Normal | RE-01 | El productor crea un producto: queda guardado con id y en EN_ORIGEN | [`8e04615`](https://github.com/fabio2152/lab4/commit/8e04615) | [`5c045fd`](https://github.com/fabio2152/lab4/commit/5c045fd) | ✅ |
+| T10 | 4 | Normal | RE-10 | El regulador ve todos los productos | [`b26b24a`](https://github.com/fabio2152/lab4/commit/b26b24a) | [`389a438`](https://github.com/fabio2152/lab4/commit/389a438) | ✅ |
+| T11 | 4 | Normal | RE-10 | El productor ve solo los productos que creó | [`cec61fb`](https://github.com/fabio2152/lab4/commit/cec61fb) | [`3274ff4`](https://github.com/fabio2152/lab4/commit/3274ff4) | ✅ |
+| T12 | 4 | Normal | RE-10 | El intermediario ve solo sus productos asignados | [`a6eb858`](https://github.com/fabio2152/lab4/commit/a6eb858) | [`bc56885`](https://github.com/fabio2152/lab4/commit/bc56885) | ✅ |
+| T13 | 5 | Normal | RE-07 | Cambiar el estado por id usa el reloj del sistema | [`002de72`](https://github.com/fabio2152/lab4/commit/002de72) | [`0f3c69b`](https://github.com/fabio2152/lab4/commit/0f3c69b) | ✅ |
+| T14 | 5 | Error | — | Cambiar el estado de un producto inexistente se rechaza | [`238ed3e`](https://github.com/fabio2152/lab4/commit/238ed3e) | [`50edcd4`](https://github.com/fabio2152/lab4/commit/50edcd4) | ✅ |
+| T15 | 5 | Normal | RE-09 | Tras dos cambios, el historial tiene dos registros | [`7c9d445`](https://github.com/fabio2152/lab4/commit/7c9d445) | [`06169b8`](https://github.com/fabio2152/lab4/commit/06169b8) | ✅ |
+| T16 | 6 | Normal | Login | Usuario y contraseña correctos devuelven el usuario | [`4cff306`](https://github.com/fabio2152/lab4/commit/4cff306) | [`6b4187a`](https://github.com/fabio2152/lab4/commit/6b4187a) | ✅ |
+| T17 | 6 | Error | Login | Una contraseña incorrecta se rechaza | [`75eb7cd`](https://github.com/fabio2152/lab4/commit/75eb7cd) | [`162c9c8`](https://github.com/fabio2152/lab4/commit/162c9c8) | ✅ |
 
 | Ciclo | Tema | REFACTOR | Estado |
 |---|---|---|---|
 | 1 | Recorrido normal del producto | [`33b4d0a`](https://github.com/fabio2152/lab4/commit/33b4d0a) | ✅ Completo |
 | 2 | Orden de las etapas | [`15062f8`](https://github.com/fabio2152/lab4/commit/15062f8) | ✅ Completo |
 | 3 | Permisos | [`d3cd1f9`](https://github.com/fabio2152/lab4/commit/d3cd1f9) | ✅ Completo |
+| 4 | Servicio: crear y listar productos | [`8bc058e`](https://github.com/fabio2152/lab4/commit/8bc058e) | ✅ Completo |
+| 5 | Servicio: cambiar estado e historial | [`c72044d`](https://github.com/fabio2152/lab4/commit/c72044d) | ✅ Completo |
+| 6 | Servicio: login | [`4176317`](https://github.com/fabio2152/lab4/commit/4176317) + [`573bb78`](https://github.com/fabio2152/lab4/commit/573bb78) | ✅ Completo |
 
 ## Control de requisitos mínimos
 
-- [x] Al menos 5 pruebas automatizadas (8 de 8).
-- [x] Al menos 3 ciclos RED-GREEN-REFACTOR completos (3 de 3).
-- [x] Casos normales (T01, T02, T03).
+- [x] Al menos 5 pruebas automatizadas (17: 8 del dominio y 9 del servicio).
+- [x] Al menos 3 ciclos RED-GREEN-REFACTOR completos (6).
+- [x] Casos normales (T01, T02, T03, T09–T13, T15, T16).
 - [x] Casos límite (T05).
-- [x] Casos de error (T04, T06, T07, T08).
+- [x] Casos de error (T04, T06, T07, T08, T14, T17).
 - [x] Ejecución completa de todas las pruebas (`./mvnw test`) en verde al cerrar cada ciclo.
-- [x] Reporte de cobertura JaCoCo (`target/site/jacoco/index.html`): 100 % de líneas y ramas del paquete `dominio` (ver [Resultados](#resultados)).
+- [x] Reporte de cobertura JaCoCo (`target/site/jacoco/index.html`): ver [Resultados](#resultados).
 
 ---
 
@@ -626,30 +638,338 @@ private void validarPermiso(Usuario usuario) {
 - **Se mantienen las dos validaciones** aunque la de asignación ya rechazaría al productor: cada una da un mensaje distinto y preciso, y T07 exige el suyo.
 - **Los permisos van antes que las etapas:** quien no tiene permiso no recibe información sobre el estado del producto.
 - **Parámetros que esperaron a su prueba:** `usuario` (recibido desde T02) recién se usó en T07, e `intermediarioAsignado` (recibido desde T01) recién se guardó en T08. Nada se implementó antes de que una prueba lo pidiera.
-- **Pendiente para ciclos opcionales:** comparar usuarios por `id` cuando exista el repositorio en memoria, validar RE-02/RE-03 al crear el producto, el historial (RE-09) y la visibilidad por rol (RE-10).
+- **Pendiente para ciclos opcionales:** comparar usuarios por `id` cuando exista el repositorio en memoria, validar RE-02/RE-03 al crear el producto, el historial (RE-09) y la visibilidad por rol (RE-10). *(RE-09 y RE-10 se cubrieron después en los ciclos 4 y 5; RE-02 y RE-03 quedaron fuera del alcance.)*
+
+---
+
+## Ciclo 4 – Servicio: crear y listar productos
+
+**Fecha:** 2026-09-26
+**Responsables:** Fabio Ezequiel Malpartida Lema, Piero Anghelo Pittman Tolentino
+**Reglas que se abordan:** RE-01, RE-10
+**Tipo de casos:** Normales
+**Clase de prueba:** `ProductoServiceTest` (servicio con repositorio en memoria y un reloj fijo a las 08:00 del 01/09/2026, preparados en `@BeforeEach`)
+
+Desde este ciclo el servicio recibe el `Clock` en su constructor: es la "clase que recibe el reloj del sistema" de la sección 7 del documento. Spring le pasa la hora real y las pruebas le pasan una fija.
+
+### T09 – El productor crea un producto y queda guardado con id en EN_ORIGEN (RE-01)
+
+```text
+Dado un productor, un intermediario y el servicio
+Cuando el productor crea "Palta Hass" asignada al intermediario
+Entonces el producto tiene id, buscarPorId(id) devuelve ese mismo producto y está en EN_ORIGEN
+```
+
+**🔴 RED** – `ProductoServiceTest#elProductorCreaUnProductoYQuedaGuardadoConIdEnOrigen`
+
+- Esqueletos: `ProductoService` (constructor vacío; `crearProducto` y `buscarPorId` devuelven `null`), `ProductoRepositorioEnMemoria` vacío y `Producto.getId()` que devuelve `null`.
+- **Qué falló:** `Expecting actual not to be null` (el servicio no creaba nada).
+- Commit: [`8e04615`](https://github.com/fabio2152/lab4/commit/8e04615) · Evidencia: [ciclo-4-T09-red.txt](evidencias/ciclo-4-T09-red.txt)
+
+**🟢 GREEN**
+
+- **Código mínimo:** el repositorio guarda en una lista y asigna un id secuencial (`guardar`, `buscarPorId` con `Optional`); `Producto` tiene `id` con `getId`/`setId`; el servicio crea el producto y lo guarda. El reloj todavía no se guarda: ninguna prueba lo usa.
+- Commit: [`5c045fd`](https://github.com/fabio2152/lab4/commit/5c045fd) · Evidencia: [ciclo-4-T09-green.txt](evidencias/ciclo-4-T09-green.txt)
+
+### T10 – El regulador ve todos los productos (RE-10)
+
+**🔴 RED** – `ProductoServiceTest#elReguladorVeTodosLosProductos`
+
+- Dos productos asignados a intermediarios distintos; `listarProductos(regulador)` debe devolver ambos.
+- Esqueletos: valor `REGULADOR` en `Rol` y `listarProductos` que devuelve `null`.
+- **Qué falló:** `Expecting actual not to be null`.
+- Commit: [`b26b24a`](https://github.com/fabio2152/lab4/commit/b26b24a) · Evidencia: [ciclo-4-T10-red.txt](evidencias/ciclo-4-T10-red.txt)
+
+**🟢 GREEN**
+
+- **Código mínimo:** `listarProductos` devuelve `repositorio.listarTodos()` sin filtrar. Es correcto para el regulador y todavía nadie exige filtros.
+- Commit: [`389a438`](https://github.com/fabio2152/lab4/commit/389a438) · Evidencia: [ciclo-4-T10-green.txt](evidencias/ciclo-4-T10-green.txt)
+
+### T11 – El productor ve solo los productos que creó (RE-10)
+
+**🔴 RED** – `ProductoServiceTest#elProductorVeSoloLosProductosQueCreo`
+
+- Un producto de `productor1` y otro de `productor2`; `productor1` debe ver solo el suyo.
+- **Qué falló:** se devolvían los dos productos (el GREEN de T10 no filtraba).
+- Commit: [`cec61fb`](https://github.com/fabio2152/lab4/commit/cec61fb) · Evidencia: [ciclo-4-T11-red.txt](evidencias/ciclo-4-T11-red.txt)
+
+**🟢 GREEN**
+
+- **Código mínimo:** `Producto` guarda por fin el `productor` que recibía desde T01 (`getProductor()`), y el servicio filtra cuando el rol es PRODUCTOR.
+- Commit: [`3274ff4`](https://github.com/fabio2152/lab4/commit/3274ff4) · Evidencia: [ciclo-4-T11-green.txt](evidencias/ciclo-4-T11-green.txt)
+
+### T12 – El intermediario ve solo sus productos asignados (RE-10)
+
+**🔴 RED** – `ProductoServiceTest#elIntermediarioVeSoloSusProductosAsignados`
+
+- Un producto para `intermediario1` y otro para `intermediario2`; `intermediario1` debe ver solo el suyo.
+- **Qué falló:** se devolvían los dos productos.
+- Commit: [`a6eb858`](https://github.com/fabio2152/lab4/commit/a6eb858) · Evidencia: [ciclo-4-T12-red.txt](evidencias/ciclo-4-T12-red.txt)
+
+**🟢 GREEN**
+
+- **Código mínimo:** `getIntermediarioAsignado()` en `Producto` y un segundo `if` en el servicio para el rol INTERMEDIARIO.
+- Commit: [`bc56885`](https://github.com/fabio2152/lab4/commit/bc56885) · Evidencia: [ciclo-4-T12-green.txt](evidencias/ciclo-4-T12-green.txt)
+
+### 🔵 REFACTOR del ciclo 4
+
+**Qué se mejoró y por qué:** el servicio tenía un `if` por rol con el mismo `stream().filter(...)` repetido. La regla de "quién puede ver qué" es conocimiento del producto, así que pasó a `Producto.esVisiblePara(usuario)` con un `switch` sobre el rol. El servicio queda con una sola línea de filtrado. En las pruebas, `otroIntermediario` pasó al `@BeforeEach`.
+
+**Código antes (`ProductoService`):**
+
+```java
+List<Producto> todos = repositorio.listarTodos();
+
+if (usuario.getRol() == Rol.PRODUCTOR) {
+    return todos.stream()
+            .filter(producto -> producto.getProductor() == usuario)
+            .toList();
+}
+
+if (usuario.getRol() == Rol.INTERMEDIARIO) {
+    return todos.stream()
+            .filter(producto -> producto.getIntermediarioAsignado() == usuario)
+            .toList();
+}
+
+return todos;
+```
+
+**Código después:**
+
+```java
+// ProductoService
+return repositorio.listarTodos()
+        .stream()
+        .filter(producto -> producto.esVisiblePara(usuario))
+        .toList();
+
+// Producto
+public boolean esVisiblePara(Usuario usuario) {
+    return switch (usuario.getRol()) {
+        case PRODUCTOR -> productor == usuario;
+        case INTERMEDIARIO -> intermediarioAsignado == usuario;
+        case REGULADOR -> true;
+    };
+}
+```
+
+- Resultado: `Tests run: 12, Failures: 0, Errors: 0` – BUILD SUCCESS.
+- Commit: [`8bc058e`](https://github.com/fabio2152/lab4/commit/8bc058e) · Evidencia: [ciclo-4-refactor.txt](evidencias/ciclo-4-refactor.txt)
+
+---
+
+## Ciclo 5 – Servicio: cambiar estado e historial
+
+**Fecha:** 2026-09-26
+**Responsables:** Fabio Ezequiel Malpartida Lema, Piero Anghelo Pittman Tolentino
+**Reglas que se abordan:** RE-07, RE-09
+**Tipo de casos:** Normales (T13, T15) y error (T14)
+
+### T13 – Cambiar el estado por id usa el reloj del sistema (RE-07)
+
+**🔴 RED** – `ProductoServiceTest#cambiarElEstadoPorIdUsaElRelojDelSistema`
+
+- `servicio.cambiarEstado(id, EN_TRANSITO, intermediario)`: el producto debe quedar EN_TRANSITO con hora de inicio igual a la del reloj del servicio (08:00).
+- Esqueleto: `cambiarEstado(idProducto, nuevoEstado, usuario)` vacío.
+- **Qué falló:** `expected: EN_TRANSITO but was: EN_ORIGEN`.
+- Commit: [`002de72`](https://github.com/fabio2152/lab4/commit/002de72) · Evidencia: [ciclo-5-T13-red.txt](evidencias/ciclo-5-T13-red.txt)
+
+**🟢 GREEN**
+
+- **Código mínimo:** el servicio guarda el `Clock` que recibía desde T09, busca el producto y delega en `producto.cambiarEstado(nuevoEstado, usuario, reloj)`. Todas las reglas del dominio (ciclos 1 a 3) se reutilizan sin duplicarlas.
+- Commit: [`0f3c69b`](https://github.com/fabio2152/lab4/commit/0f3c69b) · Evidencia: [ciclo-5-T13-green.txt](evidencias/ciclo-5-T13-green.txt)
+
+### T14 – Cambiar el estado de un producto inexistente se rechaza
+
+**🔴 RED** – `ProductoServiceTest#cambiarElEstadoDeUnProductoInexistenteSeRechaza`
+
+- Se espera `ProductoNoEncontradoException` con *"No existe un producto con id 99"*.
+- Esqueleto: clase vacía `ProductoNoEncontradoException`.
+- **Qué falló:** se lanzaba un `NullPointerException` (el GREEN de T13 usaba `orElse(null)`).
+- Commit: [`238ed3e`](https://github.com/fabio2152/lab4/commit/238ed3e) · Evidencia: [ciclo-5-T14-red.txt](evidencias/ciclo-5-T14-red.txt)
+
+**🟢 GREEN**
+
+- **Código mínimo:** `orElseThrow(...)` con la excepción propia y su mensaje.
+- Commit: [`50edcd4`](https://github.com/fabio2152/lab4/commit/50edcd4) · Evidencia: [ciclo-5-T14-green.txt](evidencias/ciclo-5-T14-green.txt)
+
+### T15 – Tras dos cambios, el historial tiene dos registros (RE-09)
+
+```text
+Dado un producto que pasa a EN_TRANSITO y luego a EN_DESTINO (reloj a las 08:00)
+Cuando se pide su historial
+Entonces hay dos registros, en orden:
+  EN_ORIGEN → EN_TRANSITO, 08:00, intermediario1
+  EN_TRANSITO → EN_DESTINO, 08:00, intermediario1
+```
+
+**🔴 RED** – `ProductoServiceTest#trasDosCambiosElHistorialTieneDosRegistros`
+
+- Esqueletos: el `record CambioEstado(estadoAnterior, estadoNuevo, fechaHora, usuario)` y `obtenerHistorial` que devuelve `null`.
+- **Qué falló:** `Expecting actual not to be null`.
+- Commit: [`7c9d445`](https://github.com/fabio2152/lab4/commit/7c9d445) · Evidencia: [ciclo-5-T15-red.txt](evidencias/ciclo-5-T15-red.txt)
+
+**🟢 GREEN**
+
+- **Código mínimo:** `Producto` agrega un `CambioEstado` a su historial en cada cambio válido (después de las validaciones, así un intento rechazado no queda registrado) y lo expone con `getHistorial()`; el servicio lo devuelve.
+- Commit: [`06169b8`](https://github.com/fabio2152/lab4/commit/06169b8) · Evidencia: [ciclo-5-T15-green.txt](evidencias/ciclo-5-T15-green.txt)
+
+### 🔵 REFACTOR del ciclo 5
+
+**Qué se mejoró y por qué:**
+
+1. La búsqueda con su `orElseThrow` estaba dentro de `cambiarEstado`; pasó a un método privado `buscarProductoExistente(id)`, así `cambiarEstado` solo expresa la acción.
+2. `getHistorial()` devuelve una copia inmodificable (`List.copyOf`): desde fuera nadie puede agregar ni borrar registros. Es la misma idea de "nadie puede alterar los tiempos" aplicada al historial.
+
+**Código después (`ProductoService`):**
+
+```java
+public void cambiarEstado(Long idProducto, EstadoProducto nuevoEstado, Usuario usuario) {
+
+    Producto producto = buscarProductoExistente(idProducto);
+
+    producto.cambiarEstado(nuevoEstado, usuario, reloj);
+}
+
+
+private Producto buscarProductoExistente(Long idProducto) {
+
+    return repositorio
+            .buscarPorId(idProducto)
+            .orElseThrow(
+                () -> new ProductoNoEncontradoException(
+                    "No existe un producto con id " + idProducto
+                )
+            );
+}
+```
+
+- Resultado: `Tests run: 15, Failures: 0, Errors: 0` – BUILD SUCCESS.
+- Commit: [`c72044d`](https://github.com/fabio2152/lab4/commit/c72044d) · Evidencia: [ciclo-5-refactor.txt](evidencias/ciclo-5-refactor.txt)
+
+---
+
+## Ciclo 6 – Servicio: login
+
+**Fecha:** 2026-09-26
+**Responsables:** Fabio Ezequiel Malpartida Lema, Piero Anghelo Pittman Tolentino
+**Reglas que se abordan:** Login simple (sección 8 del documento)
+**Tipo de casos:** Normal (T16) y error (T17)
+**Clase de prueba:** `LoginServiceTest` (repositorio de usuarios con `productor1/clave123` e `intermediario1/clave456`)
+
+### T16 – Usuario y contraseña correctos devuelven el usuario
+
+**🔴 RED** – `LoginServiceTest#usuarioYContrasenaCorrectosDevuelvenElUsuario`
+
+- Esqueletos: `LoginService` (`iniciarSesion` devuelve `null`), `UsuarioRepositorioEnMemoria` con `guardar` vacío, y un constructor `Usuario(nombreUsuario, contrasena, rol)` que delega en el existente (las pruebas del dominio no se tocaron).
+- **Qué falló:** `Expecting actual: null` — se esperaba el mismo objeto `productor1`.
+- Commit: [`4cff306`](https://github.com/fabio2152/lab4/commit/4cff306) · Evidencia: [ciclo-6-T16-red.txt](evidencias/ciclo-6-T16-red.txt)
+
+**🟢 GREEN**
+
+- **Código mínimo:** `Usuario` guarda su `nombreUsuario`; el repositorio busca por nombre; el login devuelve el usuario encontrado. **Todavía no revisa la contraseña**: ninguna prueba lo exigía.
+- Commit: [`6b4187a`](https://github.com/fabio2152/lab4/commit/6b4187a) · Evidencia: [ciclo-6-T16-green.txt](evidencias/ciclo-6-T16-green.txt)
+
+### T17 – Una contraseña incorrecta se rechaza
+
+**🔴 RED** – `LoginServiceTest#unaContrasenaIncorrectaSeRechaza`
+
+- Se espera `CredencialesInvalidasException` con *"Usuario o contraseña incorrectos"*.
+- **Qué falló:** `Expecting code to raise a throwable.` — el atajo de T16 aceptaba cualquier contraseña.
+- Commit: [`75eb7cd`](https://github.com/fabio2152/lab4/commit/75eb7cd) · Evidencia: [ciclo-6-T17-red.txt](evidencias/ciclo-6-T17-red.txt)
+
+**🟢 GREEN**
+
+- **Código mínimo:** `Usuario` guarda la contraseña y responde `tieneContrasena(...)`; el login encadena `filter(...)` y `orElseThrow(...)`. El mismo camino rechaza también a un usuario inexistente, sin una condición extra, y con el mismo mensaje (no revela si el usuario existe).
+
+```java
+return usuarios
+        .buscarPorNombreUsuario(nombreUsuario)
+        .filter(usuario -> usuario.tieneContrasena(contrasena))
+        .orElseThrow(
+            () -> new CredencialesInvalidasException(
+                "Usuario o contraseña incorrectos"
+            )
+        );
+```
+
+- Commit: [`162c9c8`](https://github.com/fabio2152/lab4/commit/162c9c8) · Evidencia: [ciclo-6-T17-green.txt](evidencias/ciclo-6-T17-green.txt)
+
+### 🔵 REFACTOR del ciclo 6
+
+**Qué se mejoró y por qué:** `Usuario` tenía la delegación al revés (el constructor completo llamaba al corto y luego asignaba la contraseña), lo que obligaba a que `contrasena` no fuera `final`. Ahora el constructor completo asigna los tres campos, el corto delega en él con `this(nombreUsuario, null, rol)`, y todos los campos son `final`.
+
+**Nota sobre los commits:** el primer commit de refactor ([`4176317`](https://github.com/fabio2152/lab4/commit/4176317)) subió por error solo la evidencia, sin el cambio de código. Como las reglas del proyecto prohíben reescribir el historial (`amend`, `rebase`, `push --force`), se corrigió con un segundo commit ([`573bb78`](https://github.com/fabio2152/lab4/commit/573bb78)) que contiene el cambio real. Ambos quedan visibles en el historial.
+
+**Código antes:**
+
+```java
+private final String nombreUsuario;
+private final Rol rol;
+private String contrasena;
+
+public Usuario(String nombreUsuario, Rol rol) {
+    this.nombreUsuario = nombreUsuario;
+    this.rol = rol;
+}
+
+public Usuario(String nombreUsuario, String contrasena, Rol rol) {
+    this(nombreUsuario, rol);
+    this.contrasena = contrasena;
+}
+```
+
+**Código después:**
+
+```java
+private final String nombreUsuario;
+private final String contrasena;
+private final Rol rol;
+
+public Usuario(String nombreUsuario, Rol rol) {
+    this(nombreUsuario, null, rol);
+}
+
+public Usuario(String nombreUsuario, String contrasena, Rol rol) {
+    this.nombreUsuario = nombreUsuario;
+    this.contrasena = contrasena;
+    this.rol = rol;
+}
+```
+
+- Resultado: `Tests run: 17, Failures: 0, Errors: 0` – BUILD SUCCESS.
+- Commits: [`4176317`](https://github.com/fabio2152/lab4/commit/4176317) (solo evidencia) y [`573bb78`](https://github.com/fabio2152/lab4/commit/573bb78) (cambio de código) · Evidencia: [ciclo-6-refactor.txt](evidencias/ciclo-6-refactor.txt)
+
+### Decisiones de diseño y aprendizajes de los ciclos 4 a 6
+
+- **El servicio no repite reglas:** todas las validaciones de etapas y permisos siguen en el dominio; el servicio solo busca, delega y guarda. Por eso T13 pasó con una sola línea de delegación.
+- **Parámetros que esperaron a su prueba:** `productor` (recibido desde T01) recién se guardó en T11, y el reloj del servicio (recibido desde T09) recién se guardó en T13.
+- **Atajos que la siguiente prueba rompió:** T10 listaba todo sin filtrar (T11 lo rompió), T13 usaba `orElse(null)` (T14 lo rompió) y T16 no revisaba la contraseña (T17 lo rompió).
+- **Comparación por referencia:** los filtros y permisos comparan usuarios con `==`. Funciona porque el repositorio en memoria devuelve siempre los mismos objetos; con una base de datos real habría que comparar por `id`.
 
 ---
 
 ## Resultados
 
-**Ejecución final (`./mvnw test`):** `Tests run: 8, Failures: 0, Errors: 0, Skipped: 0` – BUILD SUCCESS.
+**Ejecución final (`./mvnw test`):** `Tests run: 17, Failures: 0, Errors: 0, Skipped: 0` – BUILD SUCCESS (8 pruebas en `ProductoTest`, 7 en `ProductoServiceTest` y 2 en `LoginServiceTest`).
 
-**Cobertura JaCoCo del paquete `dominio`** (clases construidas con TDD):
+**Cobertura JaCoCo de las clases de dominio y servicio:**
 
-| Clase | Líneas cubiertas | Ramas cubiertas |
-|---|---|---|
-| `Producto` | 31 / 31 | 14 / 14 |
-| `EstadoProducto` | 12 / 12 | 8 / 8 |
-| `Usuario` | 4 / 4 | – |
-| `Rol` | 3 / 3 | – |
-| `DuracionNoDisponibleException` | 2 / 2 | – |
-| `CambioDeEstadoNoPermitidoException` | 2 / 2 | – |
-| `OperacionNoAutorizadaException` | 2 / 2 | – |
-| **Total `dominio`** | **56 / 56 (100 %)** | **22 / 22 (100 %)** |
+| Paquete | Clase | Líneas cubiertas | Ramas cubiertas |
+|---|---|---|---|
+| `dominio` | `Producto` | 43 / 46 | 21 / 21 |
+| `dominio` | `EstadoProducto` | 12 / 12 | 8 / 8 |
+| `dominio` | `Usuario` | 10 / 10 | – |
+| `dominio` | `Rol`, `CambioEstado` y las 3 excepciones | 11 / 11 | – |
+| `servicio` | `ProductoService` | 23 / 23 | – |
+| `servicio` | `LoginService` | 8 / 8 | – |
+| `servicio` | `ProductoNoEncontradoException`, `CredencialesInvalidasException` | 4 / 4 | – |
+| **Total** | | **111 / 114 (97 %)** | **29 / 29 (100 %)** |
 
-La única clase sin cobertura es `QrutaTrazabilidadApplication` (el `main` de Spring Boot), que no es lógica de dominio. Que el dominio tenga 100 % de líneas y ramas cubiertas es consecuencia directa del proceso: **cada línea se escribió para hacer pasar una prueba que antes había fallado.**
+Las 3 líneas sin cubrir de `Producto` son los *getters* `getNombre()`, `getProductor()` y `getIntermediarioAsignado()`, que solo se usan para mostrar los datos del producto en pantalla. Todas las **ramas** (cada `if`, cada caso de `switch`) están cubiertas: no existe ninguna decisión de negocio sin una prueba que la haya exigido.
 
-**Historial de commits del proceso:** 8 commits `test` (RED), 8 commits `feat` (GREEN) y 3 commits `refactor`, verificables con:
+**Historial de commits del proceso TDD:** 17 commits `test` (RED), 17 commits `feat(ciclo-N)` (GREEN) y 7 commits `refactor` (6 ciclos; el ciclo 6 tiene dos), verificables con:
 
 ```bash
 git log --oneline --reverse
