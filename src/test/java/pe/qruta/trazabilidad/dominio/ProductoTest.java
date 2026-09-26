@@ -129,6 +129,46 @@ class ProductoTest {
     }
 
 
+    @Test
+    void unProductoEntregadoNoPuedeCambiarDeEstado() {
+
+        // Dado
+        Producto producto =
+            new Producto("Palta Hass", productor, intermediario);
+
+        producto.cambiarEstado(
+            EstadoProducto.EN_TRANSITO,
+            intermediario,
+            relojFijoEn(horaDelDia(8, 0))
+        );
+
+        producto.cambiarEstado(
+            EstadoProducto.EN_DESTINO,
+            intermediario,
+            relojFijoEn(horaDelDia(14, 30))
+        );
+
+        producto.cambiarEstado(
+            EstadoProducto.ENTREGADO,
+            intermediario,
+            relojFijoEn(horaDelDia(16, 0))
+        );
+
+        // Cuando / Entonces
+        assertThatThrownBy(() ->
+            producto.cambiarEstado(
+                EstadoProducto.EN_DESTINO,
+                intermediario,
+                relojFijoEn(horaDelDia(17, 0))
+            )
+        )
+            .isInstanceOf(CambioDeEstadoNoPermitidoException.class)
+            .hasMessage(
+                "El producto ya fue entregado y no puede cambiar de estado"
+            );
+    }
+
+
     private LocalDateTime horaDelDia(
             int hora,
             int minuto
