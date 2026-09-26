@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 
 public class Producto {
 
+    private Usuario intermediarioAsignado;
+
     private EstadoProducto estado = EstadoProducto.EN_ORIGEN;
 
     private LocalDateTime horaInicioTransporte;
@@ -19,6 +21,7 @@ public class Producto {
             Usuario productor,
             Usuario intermediarioAsignado
     ) {
+        this.intermediarioAsignado = intermediarioAsignado;
     }
 
 
@@ -36,6 +39,12 @@ public class Producto {
         if (usuario.getRol() != Rol.INTERMEDIARIO) {
             throw new OperacionNoAutorizadaException(
                 "Solo un intermediario puede cambiar el estado de un producto"
+            );
+        }
+
+        if (usuario != intermediarioAsignado) {
+            throw new OperacionNoAutorizadaException(
+                "El usuario no está asignado a este producto"
             );
         }
 
