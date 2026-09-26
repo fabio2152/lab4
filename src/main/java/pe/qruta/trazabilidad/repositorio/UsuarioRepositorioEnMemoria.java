@@ -24,4 +24,9 @@ public class UsuarioRepositorioEnMemoria {
                 .filter(usuario -> usuario.getNombreUsuario().equals(nombreUsuario))
                 .findFirst();
     }
+
+
+    public List<Usuario> listarTodos() {
+        return new ArrayList<>(usuarios);
+    }
 }
