@@ -9,6 +9,8 @@ public class Producto {
 
     private Long id;
 
+    private final Usuario productor;
+
     private final Usuario intermediarioAsignado;
 
     private EstadoProducto estado = EstadoProducto.EN_ORIGEN;
@@ -23,6 +25,7 @@ public class Producto {
             Usuario productor,
             Usuario intermediarioAsignado
     ) {
+        this.productor = productor;
         this.intermediarioAsignado = intermediarioAsignado;
     }
 
@@ -34,6 +37,11 @@ public class Producto {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+
+    public Usuario getProductor() {
+        return productor;
     }
 
 

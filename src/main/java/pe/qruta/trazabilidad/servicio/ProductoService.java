@@ -4,6 +4,7 @@ import java.time.Clock;
 import java.util.List;
 
 import pe.qruta.trazabilidad.dominio.Producto;
+import pe.qruta.trazabilidad.dominio.Rol;
 import pe.qruta.trazabilidad.dominio.Usuario;
 import pe.qruta.trazabilidad.repositorio.ProductoRepositorioEnMemoria;
 
@@ -43,6 +44,16 @@ public class ProductoService {
 
 
     public List<Producto> listarProductos(Usuario usuario) {
-        return repositorio.listarTodos();
+
+        List<Producto> todos = repositorio.listarTodos();
+
+        if (usuario.getRol() == Rol.PRODUCTOR) {
+            return todos
+                    .stream()
+                    .filter(producto -> producto.getProductor() == usuario)
+                    .toList();
+        }
+
+        return todos;
     }
 }
