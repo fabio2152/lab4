@@ -67,6 +67,8 @@ public class ProductoService {
             buscarProductoExistente(idProducto);
 
         producto.cambiarEstado(nuevoEstado, usuario, reloj);
+
+        repositorio.guardar(producto);
     }
 
 

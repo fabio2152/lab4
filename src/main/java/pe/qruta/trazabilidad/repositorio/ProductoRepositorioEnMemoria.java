@@ -18,6 +18,10 @@ public class ProductoRepositorioEnMemoria
     @Override
     public Producto guardar(Producto producto) {
 
+        if (producto.getId() != null) {
+            return producto;
+        }
+
         producto.setId(siguienteId);
 
         siguienteId++;
