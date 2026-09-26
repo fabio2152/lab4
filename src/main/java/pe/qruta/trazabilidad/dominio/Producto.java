@@ -1,6 +1,7 @@
 package pe.qruta.trazabilidad.dominio;
 
 import java.time.Clock;
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 
@@ -38,5 +39,15 @@ public class Producto {
 
     public LocalDateTime getHoraInicioTransporte() {
         return horaInicioTransporte;
+    }
+
+
+    public LocalDateTime getHoraLlegada() {
+        return null;
+    }
+
+
+    public Duration getDuracionTransporte() {
+        return null;
     }
 }
