@@ -47,7 +47,17 @@ public class Producto {
             LocalDateTime horaLlegada,
             List<CambioEstado> historial
     ) {
-        return new Producto(nombre, productor, intermediarioAsignado);
+
+        Producto producto =
+            new Producto(nombre, productor, intermediarioAsignado);
+
+        producto.id = id;
+        producto.estado = estado;
+        producto.horaInicioTransporte = horaInicioTransporte;
+        producto.horaLlegada = horaLlegada;
+        producto.historial.addAll(historial);
+
+        return producto;
     }
 
 
