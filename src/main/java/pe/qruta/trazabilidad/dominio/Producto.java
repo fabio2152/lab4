@@ -68,6 +68,13 @@ public class Producto {
 
 
     public Duration getDuracionTransporte() {
+
+        if (horaLlegada == null) {
+            throw new DuracionNoDisponibleException(
+                "La duración del transporte aún no está disponible: falta la hora de llegada"
+            );
+        }
+
         return Duration.between(horaInicioTransporte, horaLlegada);
     }
 }
