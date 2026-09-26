@@ -13,6 +13,6 @@ public class Producto {
 
 
     public EstadoProducto getEstado() {
-        return null;
+        return EstadoProducto.EN_ORIGEN;
     }
 }
