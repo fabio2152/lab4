@@ -3,6 +3,7 @@ package pe.qruta.trazabilidad.servicio;
 import java.time.Clock;
 import java.util.List;
 
+import pe.qruta.trazabilidad.dominio.CambioEstado;
 import pe.qruta.trazabilidad.dominio.EstadoProducto;
 import pe.qruta.trazabilidad.dominio.Producto;
 import pe.qruta.trazabilidad.dominio.Usuario;
@@ -72,5 +73,10 @@ public class ProductoService {
                 );
 
         producto.cambiarEstado(nuevoEstado, usuario, reloj);
+    }
+
+
+    public List<CambioEstado> obtenerHistorial(Long idProducto) {
+        return null;
     }
 }

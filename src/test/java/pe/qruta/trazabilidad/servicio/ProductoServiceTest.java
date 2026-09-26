@@ -11,6 +11,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import pe.qruta.trazabilidad.dominio.CambioEstado;
 import pe.qruta.trazabilidad.dominio.EstadoProducto;
 import pe.qruta.trazabilidad.dominio.Producto;
 import pe.qruta.trazabilidad.dominio.Rol;
@@ -192,5 +193,47 @@ class ProductoServiceTest {
         )
             .isInstanceOf(ProductoNoEncontradoException.class)
             .hasMessage("No existe un producto con id 99");
+    }
+
+
+    @Test
+    void trasDosCambiosElHistorialTieneDosRegistros() {
+
+        // Dado
+        Producto palta =
+            servicio.crearProducto("Palta Hass", productor, intermediario);
+
+        servicio.cambiarEstado(
+            palta.getId(),
+            EstadoProducto.EN_TRANSITO,
+            intermediario
+        );
+
+        servicio.cambiarEstado(
+            palta.getId(),
+            EstadoProducto.EN_DESTINO,
+            intermediario
+        );
+
+        // Cuando
+        List<CambioEstado> historial =
+            servicio.obtenerHistorial(palta.getId());
+
+        // Entonces
+        assertThat(historial)
+            .containsExactly(
+                new CambioEstado(
+                    EstadoProducto.EN_ORIGEN,
+                    EstadoProducto.EN_TRANSITO,
+                    OCHO_DE_LA_MANANA,
+                    intermediario
+                ),
+                new CambioEstado(
+                    EstadoProducto.EN_TRANSITO,
+                    EstadoProducto.EN_DESTINO,
+                    OCHO_DE_LA_MANANA,
+                    intermediario
+                )
+            );
     }
 }
