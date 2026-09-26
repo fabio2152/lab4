@@ -14,6 +14,15 @@ public class Usuario {
     }
 
 
+    public Usuario(
+            String nombreUsuario,
+            String contrasena,
+            Rol rol
+    ) {
+        this(nombreUsuario, rol);
+    }
+
+
     public Rol getRol() {
         return rol;
     }
