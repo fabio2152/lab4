@@ -9,11 +9,14 @@ import pe.qruta.trazabilidad.repositorio.ProductoRepositorioEnMemoria;
 
 public class ProductoService {
 
+    private final ProductoRepositorioEnMemoria repositorio;
+
 
     public ProductoService(
             ProductoRepositorioEnMemoria repositorio,
             Clock reloj
     ) {
+        this.repositorio = repositorio;
     }
 
 
@@ -22,11 +25,18 @@ public class ProductoService {
             Usuario productor,
             Usuario intermediarioAsignado
     ) {
-        return null;
+
+        Producto producto =
+            new Producto(nombre, productor, intermediarioAsignado);
+
+        return repositorio.guardar(producto);
     }
 
 
     public Producto buscarPorId(Long id) {
-        return null;
+
+        return repositorio
+                .buscarPorId(id)
+                .orElse(null);
     }
 }

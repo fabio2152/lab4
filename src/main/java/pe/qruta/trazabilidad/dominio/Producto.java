@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 
 public class Producto {
 
+    private Long id;
+
     private final Usuario intermediarioAsignado;
 
     private EstadoProducto estado = EstadoProducto.EN_ORIGEN;
@@ -26,7 +28,12 @@ public class Producto {
 
 
     public Long getId() {
-        return null;
+        return id;
+    }
+
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
 
