@@ -1,6 +1,7 @@
 package pe.qruta.trazabilidad.servicio;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
@@ -172,5 +173,24 @@ class ProductoServiceTest {
 
         assertThat(actualizado.getHoraInicioTransporte())
             .isEqualTo(OCHO_DE_LA_MANANA);
+    }
+
+
+    @Test
+    void cambiarElEstadoDeUnProductoInexistenteSeRechaza() {
+
+        // Dado
+        Long idInexistente = 99L;
+
+        // Cuando / Entonces
+        assertThatThrownBy(() ->
+            servicio.cambiarEstado(
+                idInexistente,
+                EstadoProducto.EN_TRANSITO,
+                intermediario
+            )
+        )
+            .isInstanceOf(ProductoNoEncontradoException.class)
+            .hasMessage("No existe un producto con id 99");
     }
 }
