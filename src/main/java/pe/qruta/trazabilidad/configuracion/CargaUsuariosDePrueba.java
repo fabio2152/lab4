@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 import pe.qruta.trazabilidad.dominio.Rol;
 import pe.qruta.trazabilidad.dominio.Usuario;
-import pe.qruta.trazabilidad.repositorio.UsuarioRepositorioEnMemoria;
+import pe.qruta.trazabilidad.repositorio.UsuarioRepositorio;
 
 
 /**
@@ -16,11 +16,11 @@ import pe.qruta.trazabilidad.repositorio.UsuarioRepositorioEnMemoria;
 public class CargaUsuariosDePrueba
         implements CommandLineRunner {
 
-    private final UsuarioRepositorioEnMemoria usuarios;
+    private final UsuarioRepositorio usuarios;
 
 
     public CargaUsuariosDePrueba(
-            UsuarioRepositorioEnMemoria usuarios
+            UsuarioRepositorio usuarios
     ) {
         this.usuarios = usuarios;
     }

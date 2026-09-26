@@ -1,16 +1,16 @@
 package pe.qruta.trazabilidad.servicio;
 
 import pe.qruta.trazabilidad.dominio.Usuario;
-import pe.qruta.trazabilidad.repositorio.UsuarioRepositorioEnMemoria;
+import pe.qruta.trazabilidad.repositorio.UsuarioRepositorio;
 
 
 public class LoginService {
 
-    private final UsuarioRepositorioEnMemoria usuarios;
+    private final UsuarioRepositorio usuarios;
 
 
     public LoginService(
-            UsuarioRepositorioEnMemoria usuarios
+            UsuarioRepositorio usuarios
     ) {
         this.usuarios = usuarios;
     }

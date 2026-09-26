@@ -12,20 +12,20 @@ import org.springframework.web.server.ResponseStatusException;
 import pe.qruta.trazabilidad.controlador.Dtos.UsuarioRespuesta;
 import pe.qruta.trazabilidad.dominio.Rol;
 import pe.qruta.trazabilidad.dominio.Usuario;
-import pe.qruta.trazabilidad.repositorio.UsuarioRepositorioEnMemoria;
+import pe.qruta.trazabilidad.repositorio.UsuarioRepositorio;
 
 
 @RestController
 @RequestMapping("/api/usuarios")
 public class UsuarioController {
 
-    private final UsuarioRepositorioEnMemoria usuarios;
+    private final UsuarioRepositorio usuarios;
 
     private final SesionUsuario sesion;
 
 
     public UsuarioController(
-            UsuarioRepositorioEnMemoria usuarios,
+            UsuarioRepositorio usuarios,
             SesionUsuario sesion
     ) {
         this.usuarios = usuarios;

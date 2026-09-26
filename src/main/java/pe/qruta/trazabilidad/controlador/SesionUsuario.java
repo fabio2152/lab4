@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
 import pe.qruta.trazabilidad.dominio.Usuario;
-import pe.qruta.trazabilidad.repositorio.UsuarioRepositorioEnMemoria;
+import pe.qruta.trazabilidad.repositorio.UsuarioRepositorio;
 
 
 /**
@@ -19,11 +19,11 @@ public class SesionUsuario {
 
     public static final String CABECERA = "X-Usuario";
 
-    private final UsuarioRepositorioEnMemoria usuarios;
+    private final UsuarioRepositorio usuarios;
 
 
     public SesionUsuario(
-            UsuarioRepositorioEnMemoria usuarios
+            UsuarioRepositorio usuarios
     ) {
         this.usuarios = usuarios;
     }

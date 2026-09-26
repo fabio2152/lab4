@@ -7,16 +7,19 @@ import java.util.Optional;
 import pe.qruta.trazabilidad.dominio.Usuario;
 
 
-public class UsuarioRepositorioEnMemoria {
+public class UsuarioRepositorioEnMemoria
+        implements UsuarioRepositorio {
 
     private final List<Usuario> usuarios = new ArrayList<>();
 
 
+    @Override
     public void guardar(Usuario usuario) {
         usuarios.add(usuario);
     }
 
 
+    @Override
     public Optional<Usuario> buscarPorNombreUsuario(String nombreUsuario) {
 
         return usuarios
@@ -26,6 +29,7 @@ public class UsuarioRepositorioEnMemoria {
     }
 
 
+    @Override
     public List<Usuario> listarTodos() {
         return new ArrayList<>(usuarios);
     }

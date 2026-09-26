@@ -7,18 +7,18 @@ import pe.qruta.trazabilidad.dominio.CambioEstado;
 import pe.qruta.trazabilidad.dominio.EstadoProducto;
 import pe.qruta.trazabilidad.dominio.Producto;
 import pe.qruta.trazabilidad.dominio.Usuario;
-import pe.qruta.trazabilidad.repositorio.ProductoRepositorioEnMemoria;
+import pe.qruta.trazabilidad.repositorio.ProductoRepositorio;
 
 
 public class ProductoService {
 
-    private final ProductoRepositorioEnMemoria repositorio;
+    private final ProductoRepositorio repositorio;
 
     private final Clock reloj;
 
 
     public ProductoService(
-            ProductoRepositorioEnMemoria repositorio,
+            ProductoRepositorio repositorio,
             Clock reloj
     ) {
         this.repositorio = repositorio;
