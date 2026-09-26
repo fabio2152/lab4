@@ -33,6 +33,12 @@ public class Producto {
             Clock reloj
     ) {
 
+        if (usuario.getRol() != Rol.INTERMEDIARIO) {
+            throw new OperacionNoAutorizadaException(
+                "Solo un intermediario puede cambiar el estado de un producto"
+            );
+        }
+
         validarCambioDeEtapa(nuevoEstado);
 
         estado = nuevoEstado;
