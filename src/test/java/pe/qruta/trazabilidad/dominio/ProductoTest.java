@@ -213,6 +213,31 @@ class ProductoTest {
     }
 
 
+    @Test
+    void unIntermediarioNoAsignadoNoPuedeCambiarElEstado() {
+
+        // Dado
+        Producto producto =
+            new Producto("Palta Hass", productor, intermediario);
+
+        Usuario otroIntermediario =
+            new Usuario("intermediario2", Rol.INTERMEDIARIO);
+
+        // Cuando / Entonces
+        assertThatThrownBy(() ->
+            producto.cambiarEstado(
+                EstadoProducto.EN_TRANSITO,
+                otroIntermediario,
+                relojFijoEn(horaDelDia(8, 0))
+            )
+        )
+            .isInstanceOf(OperacionNoAutorizadaException.class)
+            .hasMessage(
+                "El usuario no está asignado a este producto"
+            );
+    }
+
+
     private LocalDateTime horaDelDia(
             int hora,
             int minuto
