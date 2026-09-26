@@ -236,4 +236,24 @@ class ProductoServiceTest {
                 )
             );
     }
+
+
+    @Test
+    void elIntermediarioVeSusProductosAunqueElUsuarioSeaOtraInstancia() {
+
+        // Dado
+        Producto palta =
+            servicio.crearProducto("Palta Hass", productor, intermediario);
+
+        Usuario mismoIntermediarioLeidoDeNuevo =
+            new Usuario("intermediario1", Rol.INTERMEDIARIO);
+
+        // Cuando
+        List<Producto> productos =
+            servicio.listarProductos(mismoIntermediarioLeidoDeNuevo);
+
+        // Entonces
+        assertThat(productos)
+            .containsExactly(palta);
+    }
 }
