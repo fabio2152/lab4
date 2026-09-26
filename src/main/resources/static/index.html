@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>QRuta · Trazabilidad</title>
+    <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="barra">
+    <div class="contenedor barra__contenido">
+        <div class="marca">
+            <span class="marca__icono" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>
+            </span>
+            <div>
+                <strong>QRuta</strong>
+                <span class="marca__sub">Trazabilidad de productos</span>
+            </div>
+        </div>
+
+        <div id="sesion" class="sesion" hidden>
+            <span id="sesion-nombre" class="sesion__nombre"></span>
+            <span id="sesion-rol" class="insignia"></span>
+            <button id="boton-salir" class="boton boton--fantasma" type="button">Salir</button>
+        </div>
+    </div>
+</header>
+
+<main class="contenedor">
+
+    <!-- ===================== LOGIN ===================== -->
+    <section id="vista-login" class="login">
+        <div class="tarjeta login__tarjeta">
+            <h1>Iniciar sesión</h1>
+            <p class="texto-suave">Seguimiento del producto desde el origen hasta la entrega.</p>
+
+            <form id="formulario-login" class="formulario">
+                <label>
+                    Usuario
+                    <input id="login-usuario" name="usuario" autocomplete="username" required>
+                </label>
+                <label>
+                    Contraseña
+                    <input id="login-contrasena" name="contrasena" type="password" autocomplete="current-password" required>
+                </label>
+                <button class="boton boton--primario" type="submit">Ingresar</button>
+            </form>
+
+            <div class="usuarios-demo">
+                <p class="texto-suave">Usuarios de prueba (contraseña <code>clave123</code>):</p>
+                <div class="usuarios-demo__lista">
+                    <button type="button" class="chip" data-usuario="productor1">productor1</button>
+                    <button type="button" class="chip" data-usuario="intermediario1">intermediario1</button>
+                    <button type="button" class="chip" data-usuario="intermediario2">intermediario2</button>
+                    <button type="button" class="chip" data-usuario="regulador1">regulador1</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== PANEL ===================== -->
+    <section id="vista-panel" hidden>
+
+        <div class="encabezado-panel">
+            <div>
+                <h1 id="titulo-panel">Productos</h1>
+                <p id="descripcion-panel" class="texto-suave"></p>
+            </div>
+            <button id="boton-actualizar" class="boton boton--fantasma" type="button">Actualizar</button>
+        </div>
+
+        <div class="distribucion">
+
+            <aside class="columna-lateral">
+
+                <!-- Productor: registrar producto -->
+                <div id="panel-crear" class="tarjeta" hidden>
+                    <h2>Registrar producto</h2>
+                    <p class="texto-suave">El producto nace en <strong>EN_ORIGEN</strong>.</p>
+                    <form id="formulario-crear" class="formulario">
+                        <label>
+                            Nombre del producto
+                            <input id="crear-nombre" placeholder="Ej. Palta Hass" required>
+                        </label>
+                        <label>
+                            Intermediario asignado
+                            <select id="crear-intermediario" required></select>
+                        </label>
+                        <button class="boton boton--primario" type="submit">Registrar</button>
+                    </form>
+                </div>
+
+                <!-- Intermediario: cambio manual de estado -->
+                <div id="panel-cambio" class="tarjeta" hidden>
+                    <h2>Cambiar estado</h2>
+                    <p class="texto-suave">Indica el producto y la etapa. El sistema registra la hora.</p>
+                    <form id="formulario-cambio" class="formulario">
+                        <label>
+                            Id del producto
+                            <input id="cambio-id" type="number" min="1" required>
+                        </label>
+                        <label>
+                            Nueva etapa
+                            <select id="cambio-estado">
+                                <option>EN_TRANSITO</option>
+                                <option>EN_DESTINO</option>
+                                <option>ENTREGADO</option>
+                                <option>EN_ORIGEN</option>
+                            </select>
+                        </label>
+                        <button class="boton boton--primario" type="submit">Cambiar</button>
+                    </form>
+                </div>
+
+                <!-- Regulador: usuarios del sistema -->
+                <div id="panel-usuarios" class="tarjeta" hidden>
+                    <h2>Usuarios del sistema</h2>
+                    <ul id="lista-usuarios" class="lista-usuarios"></ul>
+                </div>
+
+                <div class="tarjeta tarjeta--suave">
+                    <h2>Etapas</h2>
+                    <ol class="leyenda-etapas">
+                        <li><span class="punto punto--EN_ORIGEN"></span>EN_ORIGEN</li>
+                        <li><span class="punto punto--EN_TRANSITO"></span>EN_TRANSITO · guarda hora de inicio</li>
+                        <li><span class="punto punto--EN_DESTINO"></span>EN_DESTINO · guarda hora de llegada</li>
+                        <li><span class="punto punto--ENTREGADO"></span>ENTREGADO · etapa final</li>
+                    </ol>
+                </div>
+            </aside>
+
+            <section class="columna-principal">
+                <div id="lista-productos" class="lista-productos"></div>
+                <div id="sin-productos" class="tarjeta vacio" hidden>
+                    No hay productos para mostrar.
+                </div>
+            </section>
+        </div>
+    </section>
+</main>
+
+<!-- Historial -->
+<dialog id="dialogo-historial" class="dialogo">
+    <div class="dialogo__encabezado">
+        <h2 id="titulo-historial">Historial</h2>
+        <button id="cerrar-historial" class="boton boton--fantasma" type="button" aria-label="Cerrar">✕</button>
+    </div>
+    <div id="contenido-historial"></div>
+</dialog>
+
+<div id="avisos" class="avisos" aria-live="polite"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
