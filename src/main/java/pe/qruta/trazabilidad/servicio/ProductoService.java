@@ -54,6 +54,13 @@ public class ProductoService {
                     .toList();
         }
 
+        if (usuario.getRol() == Rol.INTERMEDIARIO) {
+            return todos
+                    .stream()
+                    .filter(producto -> producto.getIntermediarioAsignado() == usuario)
+                    .toList();
+        }
+
         return todos;
     }
 }

@@ -45,6 +45,11 @@ public class Producto {
     }
 
 
+    public Usuario getIntermediarioAsignado() {
+        return intermediarioAsignado;
+    }
+
+
     public EstadoProducto getEstado() {
         return estado;
     }
