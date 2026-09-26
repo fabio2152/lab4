@@ -33,6 +33,12 @@ public class Producto {
             Clock reloj
     ) {
 
+        if (estado == EstadoProducto.ENTREGADO) {
+            throw new CambioDeEstadoNoPermitidoException(
+                "El producto ya fue entregado y no puede cambiar de estado"
+            );
+        }
+
         estado = nuevoEstado;
 
         registrarHora(
