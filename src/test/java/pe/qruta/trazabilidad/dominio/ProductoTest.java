@@ -169,6 +169,28 @@ class ProductoTest {
     }
 
 
+    @Test
+    void pasarDeEnOrigenDirectamenteAEnDestinoSeRechaza() {
+
+        // Dado
+        Producto producto =
+            new Producto("Palta Hass", productor, intermediario);
+
+        // Cuando / Entonces
+        assertThatThrownBy(() ->
+            producto.cambiarEstado(
+                EstadoProducto.EN_DESTINO,
+                intermediario,
+                relojFijoEn(horaDelDia(8, 0))
+            )
+        )
+            .isInstanceOf(CambioDeEstadoNoPermitidoException.class)
+            .hasMessage(
+                "No se puede pasar de EN_ORIGEN a EN_DESTINO"
+            );
+    }
+
+
     private LocalDateTime horaDelDia(
             int hora,
             int minuto
