@@ -46,7 +46,7 @@ Cada regla incumplida se rechaza con una excepción propia y un mensaje claro (p
 
 Además, cada producto guarda un **historial** de cambios (estado anterior, estado nuevo, hora y usuario), y cada rol ve solo lo que le corresponde: el productor sus productos, el intermediario los asignados y el regulador todos.
 
-**Alcance actual:** el dominio y el servicio están construidos con TDD en 6 ciclos y 17 pruebas (ver [docs/bitacora-tdd.md](docs/bitacora-tdd.md)), y la plataforma se puede usar desde el navegador. Quedan fuera de esta entrega: temperaturas y alertas, código QR, base de datos real (los datos viven en memoria y se pierden al reiniciar) y seguridad real (cifrado de contraseñas, tokens).
+**Alcance actual:** el dominio y el servicio están construidos con TDD en 6 ciclos y 17 pruebas (ver [docs/bitacora-tdd.md](docs/bitacora-tdd.md)), y la plataforma se puede usar desde el navegador. Quedan fuera de esta entrega: temperaturas y alertas, código QR, base de datos en la nube (se usa PostgreSQL local en Docker) y seguridad real (cifrado de contraseñas, tokens).
 
 ## Tecnologías utilizadas
 
@@ -55,6 +55,8 @@ Además, cada producto guarda un **historial** de cambios (estado anterior, esta
 | Java 21 | Lenguaje de programación |
 | Spring Boot 4.1 | Framework de la aplicación |
 | Spring Web (`spring-boot-starter-web`) | API REST y servidor de la página web |
+| Spring Data JPA + PostgreSQL 17 | Persistencia de usuarios, productos e historial |
+| Docker Compose | Levanta PostgreSQL en local (`docker-compose.yml`) |
 | HTML + CSS + JavaScript | Página web de la plataforma (sin librerías externas) |
 | JUnit 5 + AssertJ + Mockito (`spring-boot-starter-test`) | Pruebas automatizadas |
 | Maven + Maven Wrapper | Construcción y gestión de dependencias |
@@ -66,6 +68,7 @@ Además, cada producto guarda un **historial** de cambios (estado anterior, esta
 Requisitos previos:
 
 - JDK 21 (verificar con `java -version`).
+- Docker Desktop (para la base de datos PostgreSQL).
 - Git.
 - No es necesario instalar Maven: el proyecto incluye el Maven Wrapper (`mvnw` / `mvnw.cmd`).
 
@@ -77,6 +80,16 @@ cd lab4
 ```
 
 ## Instrucciones de ejecución
+
+1. Levantar la base de datos PostgreSQL (puerto **5433**, base `qruta_db`, usuario y contraseña `qruta`):
+
+```bash
+docker compose up -d
+```
+
+Los datos se guardan en el volumen `qruta-datos` y sobreviven a los reinicios. Para borrarlos: `docker compose down -v`.
+
+2. Iniciar la aplicación (las tablas se crean solas la primera vez):
 
 Linux / macOS / Git Bash:
 
@@ -94,7 +107,7 @@ Abrir **http://localhost:8080** en el navegador.
 
 ### Usuarios de prueba
 
-Se cargan al iniciar la aplicación. Todos usan la contraseña `clave123` (solo para la demostración: no se cifra).
+Se cargan al iniciar la aplicación si todavía no existen en la base. Todos usan la contraseña `clave123` (solo para la demostración: no se cifra).
 
 | Usuario | Rol | Qué puede hacer |
 |---|---|---|
@@ -158,13 +171,15 @@ lab4/
 │   ├── main/java/pe/qruta/trazabilidad/
 │   │   ├── dominio/           # Producto, EstadoProducto, Usuario, Rol, CambioEstado, excepciones
 │   │   ├── servicio/          # ProductoService, LoginService
-│   │   ├── repositorio/       # Repositorios en memoria
+│   │   ├── repositorio/       # Interfaces + implementación en memoria (pruebas)
+│   │   │   └── jpa/           # Entidades y repositorios PostgreSQL (aplicación)
 │   │   ├── controlador/       # API REST
 │   │   └── configuracion/     # Beans de Spring, reloj del sistema y usuarios de prueba
 │   ├── main/resources/static/ # Página web (index.html, app.js, estilos.css)
 │   └── test/java/pe/qruta/trazabilidad/
 │       ├── dominio/           # ProductoTest (T01–T08)
 │       └── servicio/          # ProductoServiceTest (T09–T15), LoginServiceTest (T16–T17)
+├── docker-compose.yml         # PostgreSQL 17
 ├── pom.xml
 ├── mvnw / mvnw.cmd
 └── README.md

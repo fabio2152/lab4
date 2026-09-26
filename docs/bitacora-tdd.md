@@ -28,6 +28,10 @@ Repositorio: https://github.com/fabio2152/lab4
 | T15 | 5 | Normal | RE-09 | Tras dos cambios, el historial tiene dos registros | [`7c9d445`](https://github.com/fabio2152/lab4/commit/7c9d445) | [`06169b8`](https://github.com/fabio2152/lab4/commit/06169b8) | ✅ |
 | T16 | 6 | Normal | Login | Usuario y contraseña correctos devuelven el usuario | [`4cff306`](https://github.com/fabio2152/lab4/commit/4cff306) | [`6b4187a`](https://github.com/fabio2152/lab4/commit/6b4187a) | ✅ |
 | T17 | 6 | Error | Login | Una contraseña incorrecta se rechaza | [`75eb7cd`](https://github.com/fabio2152/lab4/commit/75eb7cd) | [`162c9c8`](https://github.com/fabio2152/lab4/commit/162c9c8) | ✅ |
+| T18 | 7 | Normal | RE-04 | El intermediario asignado leído de nuevo (otra instancia) puede cambiar el estado | [`ca5002b`](https://github.com/fabio2152/lab4/commit/ca5002b) | [`dd0851c`](https://github.com/fabio2152/lab4/commit/dd0851c) | ✅ |
+| T19 | 7 | Normal | RE-10 | El intermediario ve sus productos aunque el usuario sea otra instancia | [`612e011`](https://github.com/fabio2152/lab4/commit/612e011) | [`d7d1eb8`](https://github.com/fabio2152/lab4/commit/d7d1eb8) | ✅ |
+| T20 | 7 | Normal | RE-08 | Un producto reconstruido en EN_TRANSITO calcula 6 h 30 min al llegar | [`257bf81`](https://github.com/fabio2152/lab4/commit/257bf81) | [`5537cbc`](https://github.com/fabio2152/lab4/commit/5537cbc) | ✅ |
+| T21 | 7 | Normal | RE-09 | Cambiar el estado guarda el producto actualizado en el repositorio | [`f54e713`](https://github.com/fabio2152/lab4/commit/f54e713) | [`4516ad2`](https://github.com/fabio2152/lab4/commit/4516ad2) | ✅ |
 
 | Ciclo | Tema | REFACTOR | Estado |
 |---|---|---|---|
@@ -37,11 +41,12 @@ Repositorio: https://github.com/fabio2152/lab4
 | 4 | Servicio: crear y listar productos | [`8bc058e`](https://github.com/fabio2152/lab4/commit/8bc058e) | ✅ Completo |
 | 5 | Servicio: cambiar estado e historial | [`c72044d`](https://github.com/fabio2152/lab4/commit/c72044d) | ✅ Completo |
 | 6 | Servicio: login | [`4176317`](https://github.com/fabio2152/lab4/commit/4176317) + [`573bb78`](https://github.com/fabio2152/lab4/commit/573bb78) | ✅ Completo |
+| 7 | Persistencia en PostgreSQL | [`8d8281f`](https://github.com/fabio2152/lab4/commit/8d8281f) | ✅ Completo |
 
 ## Control de requisitos mínimos
 
-- [x] Al menos 5 pruebas automatizadas (17: 8 del dominio y 9 del servicio).
-- [x] Al menos 3 ciclos RED-GREEN-REFACTOR completos (6).
+- [x] Al menos 5 pruebas automatizadas (21: 10 del dominio y 11 del servicio).
+- [x] Al menos 3 ciclos RED-GREEN-REFACTOR completos (7).
 - [x] Casos normales (T01, T02, T03, T09–T13, T15, T16).
 - [x] Casos límite (T05).
 - [x] Casos de error (T04, T06, T07, T08, T14, T17).
@@ -950,26 +955,67 @@ public Usuario(String nombreUsuario, String contrasena, Rol rol) {
 
 ---
 
+## Ciclo 7 – Persistencia en PostgreSQL
+
+**Fecha:** 2026-09-26
+**Responsables:** Fabio Ezequiel Malpartida Lema, Piero Anghelo Pittman Tolentino
+**Reglas que se abordan:** RE-04, RE-08, RE-09, RE-10 (mantenerlas cuando los datos vienen de una base de datos)
+**Tipo de casos:** Normales
+
+**Motivación:** al guardar los datos en PostgreSQL, cada lectura crea objetos nuevos. Un `Usuario` leído de la base ya no es *el mismo objeto* que el asignado al producto, y un `Producto` leído tiene que reconstruirse con su estado, horas e historial. Antes del ciclo se hizo un refactor preparatorio: `ProductoRepositorio` y `UsuarioRepositorio` pasaron a ser interfaces ([`f09ff22`](https://github.com/fabio2152/lab4/commit/f09ff22)), así las pruebas siguen usando la versión en memoria.
+
+### T18 – El intermediario asignado leído de nuevo puede cambiar el estado (RE-04)
+
+- **🔴 RED** – `ProductoTest#elIntermediarioAsignadoLeidoDeNuevoPuedeCambiarElEstado`: se pasa otra instancia de `intermediario1`. **Falló** con `OperacionNoAutorizadaException: El usuario no está asignado a este producto`, porque se comparaba con `!=` (referencia). Commit [`ca5002b`](https://github.com/fabio2152/lab4/commit/ca5002b) · [ciclo-7-T18-red.txt](evidencias/ciclo-7-T18-red.txt)
+- **🟢 GREEN** – `Usuario` define `equals`/`hashCode` por `nombreUsuario` y `validarPermiso` usa `equals`. Commit [`dd0851c`](https://github.com/fabio2152/lab4/commit/dd0851c) · [ciclo-7-T18-green.txt](evidencias/ciclo-7-T18-green.txt)
+
+### T19 – El intermediario ve sus productos aunque el usuario sea otra instancia (RE-10)
+
+- **🔴 RED** – `ProductoServiceTest#elIntermediarioVeSusProductosAunqueElUsuarioSeaOtraInstancia`. **Falló**: `Expecting actual: []` (el filtro de visibilidad comparaba con `==`). Commit [`612e011`](https://github.com/fabio2152/lab4/commit/612e011) · [ciclo-7-T19-red.txt](evidencias/ciclo-7-T19-red.txt)
+- **🟢 GREEN** – `esVisiblePara` usa `equals` en el caso INTERMEDIARIO. Commit [`d7d1eb8`](https://github.com/fabio2152/lab4/commit/d7d1eb8) · [ciclo-7-T19-green.txt](evidencias/ciclo-7-T19-green.txt)
+
+### T20 – Un producto reconstruido en EN_TRANSITO calcula la duración al llegar (RE-08)
+
+- **🔴 RED** – `ProductoTest#unProductoReconstruidoEnTransitoCalculaLaDuracionAlLlegar`. Esqueleto: `Producto.reconstruir(...)` que devolvía un producto nuevo. **Falló**: `expected: EN_TRANSITO but was: EN_ORIGEN`. Commit [`257bf81`](https://github.com/fabio2152/lab4/commit/257bf81) · [ciclo-7-T20-red.txt](evidencias/ciclo-7-T20-red.txt)
+- **🟢 GREEN** – `reconstruir` restaura id, estado, horas e historial. Después, las reglas del dominio siguen funcionando: pasa a EN_DESTINO y la duración es 6 h 30 min. Commit [`5537cbc`](https://github.com/fabio2152/lab4/commit/5537cbc) · [ciclo-7-T20-green.txt](evidencias/ciclo-7-T20-green.txt)
+
+### T21 – Cambiar el estado guarda el producto actualizado (RE-09)
+
+- **🔴 RED** – `ProductoServiceTest#cambiarElEstadoGuardaElProductoActualizadoEnElRepositorio`, con un repositorio de prueba que cuenta los `guardar`. **Falló**: `expected: 2 but was: 1` (en memoria no hacía falta volver a guardar; con una base de datos el cambio se perdería). Commit [`f54e713`](https://github.com/fabio2152/lab4/commit/f54e713) · [ciclo-7-T21-red.txt](evidencias/ciclo-7-T21-red.txt)
+- **🟢 GREEN** – el servicio llama a `repositorio.guardar(producto)` después de `cambiarEstado`, y el repositorio en memoria no duplica un producto que ya tiene id. Commit [`4516ad2`](https://github.com/fabio2152/lab4/commit/4516ad2) · [ciclo-7-T21-green.txt](evidencias/ciclo-7-T21-green.txt)
+
+### 🔵 REFACTOR del ciclo 7
+
+El caso PRODUCTOR de `esVisiblePara` todavía comparaba con `==`. Se cambió a `equals`, así el dominio **nunca** compara usuarios por referencia. Resultado: `Tests run: 21, Failures: 0, Errors: 0`. Commit [`8d8281f`](https://github.com/fabio2152/lab4/commit/8d8281f) · [ciclo-7-refactor.txt](evidencias/ciclo-7-refactor.txt)
+
+### Decisiones de diseño del ciclo 7
+
+- **El dominio sigue sin Spring ni JPA:** las anotaciones de base de datos están en clases aparte (`ProductoEntidad`, `UsuarioEntidad`, `CambioEstadoEntidad`, paquete `repositorio.jpa`), que traducen hacia y desde el dominio con `Producto.reconstruir(...)`.
+- **Inversión de dependencias:** el servicio depende de las interfaces `ProductoRepositorio` y `UsuarioRepositorio`. Las pruebas usan la implementación en memoria y la aplicación usa la de PostgreSQL, sin cambiar el servicio.
+- **Las pruebas no necesitan la base de datos:** siguen corriendo en milisegundos y en GitHub Actions sin Docker.
+
+---
+
 ## Resultados
 
-**Ejecución final (`./mvnw test`):** `Tests run: 17, Failures: 0, Errors: 0, Skipped: 0` – BUILD SUCCESS (8 pruebas en `ProductoTest`, 7 en `ProductoServiceTest` y 2 en `LoginServiceTest`).
+**Ejecución final (`./mvnw test`):** `Tests run: 21, Failures: 0, Errors: 0, Skipped: 0` – BUILD SUCCESS (10 pruebas en `ProductoTest`, 9 en `ProductoServiceTest` y 2 en `LoginServiceTest`).
 
 **Cobertura JaCoCo de las clases de dominio y servicio:**
 
 | Paquete | Clase | Líneas cubiertas | Ramas cubiertas |
 |---|---|---|---|
-| `dominio` | `Producto` | 43 / 46 | 21 / 21 |
+| `dominio` | `Producto` | 50 / 53 | 17 / 17 |
 | `dominio` | `EstadoProducto` | 12 / 12 | 8 / 8 |
-| `dominio` | `Usuario` | 10 / 10 | – |
+| `dominio` | `Usuario` | 12 / 14 | 3 / 4 |
 | `dominio` | `Rol`, `CambioEstado` y las 3 excepciones | 11 / 11 | – |
-| `servicio` | `ProductoService` | 23 / 23 | – |
+| `servicio` | `ProductoService` | 24 / 24 | – |
 | `servicio` | `LoginService` | 8 / 8 | – |
 | `servicio` | `ProductoNoEncontradoException`, `CredencialesInvalidasException` | 4 / 4 | – |
-| **Total** | | **111 / 114 (97 %)** | **29 / 29 (100 %)** |
+| **Total** | | **121 / 126 (96 %)** | **28 / 29 (97 %)** |
 
-Las 3 líneas sin cubrir de `Producto` son los *getters* `getNombre()`, `getProductor()` y `getIntermediarioAsignado()`, que solo se usan para mostrar los datos del producto en pantalla. Todas las **ramas** (cada `if`, cada caso de `switch`) están cubiertas: no existe ninguna decisión de negocio sin una prueba que la haya exigido.
+Sin cubrir: en `Producto`, los *getters* `getNombre()`, `getProductor()` y `getIntermediarioAsignado()`, que solo se usan para mostrar datos y guardarlos en la base; en `Usuario`, `getContrasena()` y `hashCode()`, que usa solo la capa de base de datos, y la rama de `equals` que compara un usuario con un objeto de otro tipo. Todas las decisiones de negocio (etapas, permisos, visibilidad, duración) tienen su rama cubierta por una prueba que antes falló.
 
-**Historial de commits del proceso TDD:** 17 commits `test` (RED), 17 commits `feat(ciclo-N)` (GREEN) y 7 commits `refactor` (6 ciclos; el ciclo 6 tiene dos), verificables con:
+**Historial de commits del proceso TDD:** 21 commits `test` (RED), 21 commits `feat(ciclo-N)` (GREEN) y 8 commits `refactor(ciclo-N)` (7 ciclos; el ciclo 6 tiene dos), verificables con:
 
 ```bash
 git log --oneline --reverse
