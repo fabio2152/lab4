@@ -5,17 +5,16 @@ public class Usuario {
 
     private final String nombreUsuario;
 
-    private final Rol rol;
+    private final String contrasena;
 
-    private String contrasena;
+    private final Rol rol;
 
 
     public Usuario(
             String nombreUsuario,
             Rol rol
     ) {
-        this.nombreUsuario = nombreUsuario;
-        this.rol = rol;
+        this(nombreUsuario, null, rol);
     }
 
 
@@ -24,8 +23,9 @@ public class Usuario {
             String contrasena,
             Rol rol
     ) {
-        this(nombreUsuario, rol);
+        this.nombreUsuario = nombreUsuario;
         this.contrasena = contrasena;
+        this.rol = rol;
     }
 
 
