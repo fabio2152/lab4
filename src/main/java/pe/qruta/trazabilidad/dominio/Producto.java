@@ -89,7 +89,7 @@ public class Producto {
     public boolean esVisiblePara(Usuario usuario) {
 
         return switch (usuario.getRol()) {
-            case PRODUCTOR -> productor == usuario;
+            case PRODUCTOR -> productor.equals(usuario);
             case INTERMEDIARIO -> intermediarioAsignado.equals(usuario);
             case REGULADOR -> true;
         };
