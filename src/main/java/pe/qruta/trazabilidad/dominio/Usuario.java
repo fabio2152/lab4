@@ -7,6 +7,8 @@ public class Usuario {
 
     private final Rol rol;
 
+    private String contrasena;
+
 
     public Usuario(
             String nombreUsuario,
@@ -23,6 +25,7 @@ public class Usuario {
             Rol rol
     ) {
         this(nombreUsuario, rol);
+        this.contrasena = contrasena;
     }
 
 
@@ -33,5 +36,10 @@ public class Usuario {
 
     public Rol getRol() {
         return rol;
+    }
+
+
+    public boolean tieneContrasena(String contrasena) {
+        return this.contrasena.equals(contrasena);
     }
 }

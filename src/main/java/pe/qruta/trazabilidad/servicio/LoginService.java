@@ -23,6 +23,11 @@ public class LoginService {
 
         return usuarios
                 .buscarPorNombreUsuario(nombreUsuario)
-                .orElse(null);
+                .filter(usuario -> usuario.tieneContrasena(contrasena))
+                .orElseThrow(
+                    () -> new CredencialesInvalidasException(
+                        "Usuario o contraseña incorrectos"
+                    )
+                );
     }
 }
