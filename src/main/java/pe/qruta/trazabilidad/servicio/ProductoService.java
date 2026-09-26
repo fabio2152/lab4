@@ -64,15 +64,21 @@ public class ProductoService {
     ) {
 
         Producto producto =
-            repositorio
+            buscarProductoExistente(idProducto);
+
+        producto.cambiarEstado(nuevoEstado, usuario, reloj);
+    }
+
+
+    private Producto buscarProductoExistente(Long idProducto) {
+
+        return repositorio
                 .buscarPorId(idProducto)
                 .orElseThrow(
                     () -> new ProductoNoEncontradoException(
                         "No existe un producto con id " + idProducto
                     )
                 );
-
-        producto.cambiarEstado(nuevoEstado, usuario, reloj);
     }
 
 

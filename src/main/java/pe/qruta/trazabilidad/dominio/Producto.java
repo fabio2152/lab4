@@ -143,7 +143,7 @@ public class Producto {
 
 
     public List<CambioEstado> getHistorial() {
-        return historial;
+        return List.copyOf(historial);
     }
 
 
